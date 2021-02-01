@@ -1,3 +1,3 @@
-# Open Game Engine Exchange (OpenGEX)
+# Open Game Engine Exchange
 
-This repository contains an import template for the Open Game Engine Exchange file format and export plugins for 3ds max and Maya.
+This repository contains reference code for the Open Game Engine Exchange (OpenGEX) file format.
