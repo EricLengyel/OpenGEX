@@ -3300,16 +3300,15 @@ void OpenGexExport::ExportGeometry(const OpenGex::ObjectReference *objectRef)
 
 	for (int k = 0; k < colorCount; k++)
 	{
-		IndentWrite("VertexArray (attrib = \"color", 0, true);
+		IndentWrite("VertexArray (attrib = \"color\"", 0, true);
 
 		if (k != 0)
 		{
-			Write("[");
+			Write(", index = ");
 			WriteInt(k);
-			Write("]");
 		}
 
-		Write("\")\n");
+		Write(")\n");
 
 		IndentWrite("{\n");
 		indentLevel++;
@@ -3328,16 +3327,15 @@ void OpenGexExport::ExportGeometry(const OpenGex::ObjectReference *objectRef)
 
 	for (int k = 0; k < texcoordCount; k++)
 	{
-		IndentWrite("VertexArray (attrib = \"texcoord", 0, true);
+		IndentWrite("VertexArray (attrib = \"texcoord\"", 0, true);
 
 		if (k != 0)
 		{
-			Write("[");
+			Write(", index = ");
 			WriteInt(k);
-			Write("]");
 		}
 
-		Write("\")\n");
+		Write(")\n");
 
 		IndentWrite("{\n");
 		indentLevel++;
