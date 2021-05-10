@@ -3673,16 +3673,15 @@ void OpenGexExport::ExportGeometry(const ObjectReference *objectRef)
 
 	for (int k = 0; k < texcoordCount; k++)
 	{
-		IndentWrite("VertexArray (attrib = \"texcoord", 0, true);
+		IndentWrite("VertexArray (attrib = \"texcoord\"", 0, true);
 
 		if (k != 0)
 		{
-			Write("[");
+			Write(", index = ");
 			WriteInt(k);
-			Write("]");
 		}
 
-		Write("\")\n");
+		Write(")\n");
 
 		IndentWrite("{\n");
 		indentLevel++;
