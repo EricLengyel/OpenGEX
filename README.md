@@ -2,6 +2,8 @@
 
 This repository contains reference code for the Open Game Engine Exchange (OpenGEX) file format.
 
+For more information about OpenGEX, see [opengex.org](opengex.org).
+
 ## Export Plugins
 
 To use the export plugin for 3ds Max, place the OpenGex.dle file in the Max `plugins` directory.
