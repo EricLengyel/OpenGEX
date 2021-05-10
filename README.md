@@ -2,7 +2,7 @@
 
 This repository contains reference code for the Open Game Engine Exchange (OpenGEX) file format.
 
-For more information about OpenGEX, see [opengex.org](opengex.org).
+For more information about OpenGEX, see [opengex.org](http://opengex.org).
 
 ## Export Plugins
 
