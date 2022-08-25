@@ -563,7 +563,7 @@ int32 Data::ReadStringEscapeChar(const char *text, int32 *stringLength, char *re
 			return (5);
 		}
 	}
-	if (c == 'U')
+	else if (c == 'U')
 	{
 		uint32 code = 0;
 
