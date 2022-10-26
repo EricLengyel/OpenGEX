@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -28,6 +24,7 @@
 namespace Terathon
 {
 	class Vector4D;
+	struct ConstVector4D;
 
 
 	//# \class	Vector4D	Encapsulates a 4D vector.
@@ -110,6 +107,9 @@ namespace Terathon
 	//# \action		bool operator !=(const Vector4D& v1, const Vector4D& v2) const;
 	//#				Returns a boolean value indicating whether the two vectors $v1$ and $v2$ are not equal.
 	//
+	//# \action		Vector4D operator ~(const Vector4D& v);
+	//#				Returns the antireverse of the vector $v$.
+	//
 	//# \action		Vector4D operator -(const Vector4D& v);
 	//#				Returns the negation of the vector $v$.
 	//
@@ -155,6 +155,24 @@ namespace Terathon
 	//# \action		Vector4D operator *(const Vector4D& a, const Vector4D& b);
 	//#				Returns the componentwise product of the vectors $a$ and $b$.
 	//
+	//# \action		float BulkNorm(const Vector4D& v);
+	//#				Returns the bulk norm of the vector $v$.
+	//
+	//# \action		float WeightNorm(const Vector4D& v);
+	//#				Returns the weight norm of the vector $v$.
+	//
+	//# \action		Point3D Unitize(const Vector4D& v);
+	//#				Returns the 3D point represented by the vector $v$ after unitization.
+	//
+	//# \action		float Magnitude(const Vector4D& v);
+	//#				Returns the magnitude of the vector $v$.
+	//
+	//# \action		float InverseMag(const Vector4D& v);
+	//#				Returns the inverse magnitude of the vector $v$.
+	//
+	//# \action		float SquaredMag(const Vector4D& v);
+	//#				Returns the squared magnitude of the vector $v$.
+	//
 	//# \action		float Dot(const Vector4D& a, const Vector4D& b);
 	//#				Returns the four-dimensional dot product between $a$ and $b$.
 	//
@@ -188,16 +206,7 @@ namespace Terathon
 	//# \action		Vector3D Reject(const Vector3D& a, const Vector3D& b);
 	//#				Returns (<b>a</b>&#x202F;&minus;&#x202F;<b>a</b>&nbsp;&sdot;&nbsp;<b>b</b>)<b>b</b>, which is the rejection of $a$ from $b$ under the assumption that the magnitude of $b$ is one.
 	//
-	//# \action		float Magnitude(const Vector4D& v);
-	//#				Returns the magnitude of the vector $v$.
-	//
-	//# \action		float InverseMag(const Vector4D& v);
-	//#				Returns the inverse magnitude of the vector $v$.
-	//
-	//# \action		float SquaredMag(const Vector4D& v);
-	//#				Returns the squared magnitude of the vector $v$.
-	//
-	//# \base	Vec4D	Vectors use a generic base class to store their components.
+	//# \privbase	Vec4D	Vectors use a generic base class to store their components.
 	//
 	//# \also	$@Trivector4D@$
 	//# \also	$@Vector3D@$
@@ -246,16 +255,6 @@ namespace Terathon
 	//# In all cases, the <i>w</i> coordinate is 1.0 when this function returns.
 	//#
 	//# The return value is a reference to the vector object.
-
-
-	//# \function	Vector4D::GetPoint3D		Returns a reference to a $@Point3D@$ object.
-	//
-	//# \proto	Point3D& GetPoint3D(void);
-	//# \proto	const Point3D& GetPoint3D(void) const;
-	//
-	//# \desc
-	//# The $GetPoint3D$ function returns a reference to a $@Point3D@$ object that refers to
-	//# the same data contained in the <i>x</i>, <i>y</i>, and <i>z</i> coordinates of a $Vector4D$ object.
 
 
 	//# \function	Vector4D::RotateAboutX		Rotates a vector about the <i>x</i> axis.
@@ -340,6 +339,19 @@ namespace Terathon
 	{
 		public:
 
+			TERATHON_API static const ConstVector4D zero;
+			TERATHON_API static const ConstVector4D origin;
+
+			TERATHON_API static const ConstVector4D x_unit;
+			TERATHON_API static const ConstVector4D y_unit;
+			TERATHON_API static const ConstVector4D z_unit;
+			TERATHON_API static const ConstVector4D w_unit;
+
+			TERATHON_API static const ConstVector4D minus_x_unit;
+			TERATHON_API static const ConstVector4D minus_y_unit;
+			TERATHON_API static const ConstVector4D minus_z_unit;
+			TERATHON_API static const ConstVector4D minus_w_unit;
+
 			inline Vector4D() = default;
 
 			Vector4D(float a, float b, float c, float d) : Vec4D<TypeVector4D>(a, b, c, d) {}
@@ -409,25 +421,24 @@ namespace Terathon
 
 			Vector4D& Set(const Vector2D& v1, const Vector2D& v2)
 			{
-				xy = v1.xy;
-				zw = v2.xy;
+				xyzw.Set(v1.x, v1.y, v2.x, v2.y);
 				return (*this);
 			}
 
 			void Set(const Vector2D& v1, const Vector2D& v2) volatile
 			{
-				xy = v1.xy;
-				zw = v2.xy;
+				xyzw.Set(v1.x, v1.y, v2.x, v2.y);
 			}
 
-			Point3D& GetPoint3D(void)
+			Vector4D& Set(const Vector2D& v, float c, float d)
 			{
-				return (reinterpret_cast<Point3D&>(x));
+				xyzw.Set(v.x, v.y, c, d);
+				return (*this);
 			}
 
-			const Point3D& GetPoint3D(void) const
+			void Set(const Vector2D& v, float c, float d) volatile
 			{
-				return (reinterpret_cast<const Point3D&>(x));
+				xyzw.Set(v.x, v.y, c, d);
 			}
 
 			Vector4D& operator =(const Vector4D& v)
@@ -583,18 +594,17 @@ namespace Terathon
 				return (*this);
 			}
 
-			Point3D ProjectPoint3D(void) const
-			{
-				float s = 1.0F / w;
-				return (Point3D(x * s, y * s, z * s));
-			}
-
 			TERATHON_API Vector4D& RotateAboutX(float angle);
 			TERATHON_API Vector4D& RotateAboutY(float angle);
 			TERATHON_API Vector4D& RotateAboutZ(float angle);
 			TERATHON_API Vector4D& RotateAboutAxis(float angle, const Bivector3D& axis);
 	};
 
+
+	inline Vector4D operator ~(const Vector4D& v)
+	{
+		return (Vector4D(-v.x, -v.y, -v.z, -v.w));
+	}
 
 	inline Vector4D operator -(const Vector4D& v)
 	{
@@ -672,6 +682,52 @@ namespace Terathon
 		return (Vector4D(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w));
 	}
 
+	inline const Vector4D& Reverse(const Vector4D& v)
+	{
+		return (v);
+	}
+
+	inline Vector4D Antireverse(const Vector4D& v)
+	{
+		return (~v);
+	}
+
+	inline float BulkNorm(const Vector4D& v)
+	{
+		return (Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
+	}
+
+	inline float WeightNorm(const Vector4D& v)
+	{
+		return (Fabs(v.w));
+	}
+
+	inline Point3D Unitize(const Vector4D& v)
+	{
+		float s = 1.0F / v.w;
+		return (Point3D(v.x * s, v.y * s, v.z * s));
+	}
+
+	inline float Magnitude(const Vector4D& v)
+	{
+		return (Sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
+	}
+
+	inline float InverseMag(const Vector4D& v)
+	{
+		return (InverseSqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
+	}
+
+	inline float SquaredMag(const Vector4D& v)
+	{
+		return (v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
+	}
+
+	inline Vector4D Normalize(const Vector4D& v)
+	{
+		return (v * InverseMag(v));
+	}
+
 	inline float Dot(const Vector4D& a, const Vector4D& b)
 	{
 		return (a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w);
@@ -727,26 +783,6 @@ namespace Terathon
 		return (a - b * Dot(a, b));
 	}
 
-	inline float Magnitude(const Vector4D& v)
-	{
-		return (Sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
-	}
-
-	inline float InverseMag(const Vector4D& v)
-	{
-		return (InverseSqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
-	}
-
-	inline float SquaredMag(const Vector4D& v)
-	{
-		return (v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
-	}
-
-	inline Vector4D Normalize(const Vector4D& v)
-	{
-		return (v * InverseSqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
-	}
-
 	inline Vector4D Floor(const Vector4D& v)
 	{
 		return (Vector4D(Floor(v.x), Floor(v.y), Floor(v.z), Floor(v.w)));
@@ -780,29 +816,6 @@ namespace Terathon
 			return (reinterpret_cast<const Vector4D *>(this));
 		}
 	};
-
-
-	class Zero4DType
-	{
-		private:
-
-			TERATHON_API static ConstVector4D zero;
-
-		public:
-
-			operator const Vector4D&(void) const
-			{
-				return (zero);
-			}
-
-			const Vector4D *operator &(void) const
-			{
-				return (&zero);
-			}
-	};
-
-
-	TERATHON_API extern const Zero4DType Zero4D;
 }
 
 

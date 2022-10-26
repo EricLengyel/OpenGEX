@@ -1,17 +1,14 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
 #include "TSColor.h"
+#include "TSBasic.h"
 #include "TSMath.h"
 
 
@@ -96,11 +93,35 @@ alignas(64) const float Color::srgbFloatLinearizationTable[256] =
 };
 
 
+uint32 ColorRGB::GetPackedColorRGB9E5(void) const
+{
+	alignas(64) static const uint32 dividerTable[32] =
+	{
+		0x4B800000, 0x4B000000, 0x4A800000, 0x4A000000, 0x49800000, 0x49000000, 0x48800000, 0x48000000, 0x47800000, 0x47000000, 0x46800000, 0x46000000, 0x45800000, 0x45000000, 0x44800000, 0x44000000,
+		0x43800000, 0x43000000, 0x42800000, 0x42000000, 0x41800000, 0x41000000, 0x40800000, 0x40000000, 0x3F800000, 0x3F000000, 0x3E800000, 0x3E000000, 0x3D800000, 0x3D000000, 0x3C800000, 0x3C000000
+	};
+
+	float r = Clamp(red, 0.0F, 511.0F * 128.0F);
+	float g = Clamp(green, 0.0F, 511.0F * 128.0F);
+	float b = Clamp(blue, 0.0F, 511.0F * 128.0F);
+	float m = Fmax(r, g, b);
+
+	uint32 e = MaxZero((asuint(m) >> 23) - 111);
+	e += uint32(m * asfloat(dividerTable[e]) + 0.5F) >> 9;
+
+	float d = asfloat(dividerTable[e]);
+	uint32 x = uint32(r * d + 0.5F);
+	uint32 y = uint32(g * d + 0.5F);
+	uint32 z = uint32(b * d + 0.5F);
+
+	return (x | (y << 9) | (z << 18) | (e << 27));
+}
+
 void ColorRGB::GetHexString(char *string) const
 {
-	int32 r = int32(red * 255.0F);
-	int32 g = int32(green * 255.0F);
-	int32 b = int32(blue * 255.0F);
+	int32 r = int32(red * 255.0F + 0.5F);
+	int32 g = int32(green * 255.0F + 0.5F);
+	int32 b = int32(blue * 255.0F + 0.5F);
 
 	string[0] = hexDigit[(r >> 4) & 15];
 	string[1] = hexDigit[r & 15];
@@ -190,10 +211,10 @@ ColorRGB& ColorRGB::SetHexString(const char *string)
 
 void ColorRGBA::GetHexString(char *string) const
 {
-	int32 r = int32(red * 255.0F);
-	int32 g = int32(green * 255.0F);
-	int32 b = int32(blue * 255.0F);
-	int32 a = int32(alpha * 255.0F);
+	int32 r = int32(red * 255.0F + 0.5F);
+	int32 g = int32(green * 255.0F + 0.5F);
+	int32 b = int32(blue * 255.0F + 0.5F);
+	int32 a = int32(alpha * 255.0F + 0.5F);
 
 	string[0] = hexDigit[(r >> 4) & 15];
 	string[1] = hexDigit[r & 15];

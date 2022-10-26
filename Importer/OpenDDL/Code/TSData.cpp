@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon OpenDDL Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -1232,10 +1228,32 @@ StructureRef::~StructureRef()
 {
 }
 
-void StructureRef::Reset(bool global)
+void StructureRef::ResetRef(bool global)
 {
 	nameArray.PurgeArray();
 	globalRefFlag = global;
+}
+
+bool StructureRef::operator ==(const StructureRef& ref) const
+{
+	if (globalRefFlag == ref.globalRefFlag)
+	{
+		int32 count = nameArray.GetArrayElementCount();
+		if (ref.nameArray.GetArrayElementCount() == count)
+		{
+			for (machine a = 0; a < count; a++)
+			{
+				if (nameArray[a] != ref.nameArray[a])
+				{
+					return (false);
+				}
+			}
+
+			return (true);
+		}
+	}
+
+	return (false);
 }
 
 
@@ -1707,7 +1725,7 @@ DataResult RefDataType::ParseValue(const char *& text, PrimType *value)
 
 	if (value)
 	{
-		value->Reset(c != '%');
+		value->ResetRef(c != '%');
 	}
 
 	if (uint32(c - '$') > 2U)

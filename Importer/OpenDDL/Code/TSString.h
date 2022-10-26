@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -336,34 +332,44 @@ namespace Terathon
 				return (String(c) += n);
 			}
 
+			bool operator ==(const String& s) const
+			{
+				return (Text::CompareText(c, s.c));
+			}
+
 			bool operator ==(const char *s) const
 			{
-				return (Text::CompareTextCaseless(c, s));
+				return (Text::CompareText(c, s));
+			}
+
+			bool operator !=(const String& s) const
+			{
+				return (!Text::CompareText(c, s.c));
 			}
 
 			bool operator !=(const char *s) const
 			{
-				return (!Text::CompareTextCaseless(c, s));
+				return (!Text::CompareText(c, s));
 			}
 
 			bool operator <(const char *s) const
 			{
-				return (Text::CompareTextLessThanCaseless(c, s));
+				return (Text::CompareTextLessThan(c, s));
 			}
 
 			bool operator >=(const char *s) const
 			{
-				return (!Text::CompareTextLessThanCaseless(c, s));
+				return (!Text::CompareTextLessThan(c, s));
 			}
 
 			bool operator <=(const char *s) const
 			{
-				return (Text::CompareTextLessEqualCaseless(c, s));
+				return (Text::CompareTextLessEqual(c, s));
 			}
 
 			bool operator >(const char *s) const
 			{
-				return (!Text::CompareTextLessEqualCaseless(c, s));
+				return (!Text::CompareTextLessEqual(c, s));
 			}
 
 			int32 GetStringLength(void) const
@@ -436,34 +442,44 @@ namespace Terathon
 				return (stringPointer);
 			}
 
+			bool operator ==(const String& s) const
+			{
+				return (Text::CompareText(stringPointer, s.stringPointer));
+			}
+
 			bool operator ==(const char *s) const
 			{
-				return (Text::CompareTextCaseless(stringPointer, s));
+				return (Text::CompareText(stringPointer, s));
+			}
+
+			bool operator !=(const String& s) const
+			{
+				return (!Text::CompareText(stringPointer, s.stringPointer));
 			}
 
 			bool operator !=(const char *s) const
 			{
-				return (!Text::CompareTextCaseless(stringPointer, s));
+				return (!Text::CompareText(stringPointer, s));
 			}
 
 			bool operator <(const char *s) const
 			{
-				return (Text::CompareTextLessThanCaseless(stringPointer, s));
+				return (Text::CompareTextLessThan(stringPointer, s));
 			}
 
 			bool operator >=(const char *s) const
 			{
-				return (!Text::CompareTextLessThanCaseless(stringPointer, s));
+				return (!Text::CompareTextLessThan(stringPointer, s));
 			}
 
 			bool operator <=(const char *s) const
 			{
-				return (Text::CompareTextLessEqualCaseless(stringPointer, s));
+				return (Text::CompareTextLessEqual(stringPointer, s));
 			}
 
 			bool operator >(const char *s) const
 			{
-				return (!Text::CompareTextLessEqualCaseless(stringPointer, s));
+				return (!Text::CompareTextLessEqual(stringPointer, s));
 			}
 
 			String operator +(const char *s) const
@@ -603,17 +619,17 @@ namespace Terathon
 
 			bool operator ==(const char *c) const
 			{
-				return (Text::CompareTextCaseless(ptr, c));
+				return (Text::CompareText(ptr, c));
 			}
 
 			bool operator !=(const char *c) const
 			{
-				return (!Text::CompareTextCaseless(ptr, c));
+				return (!Text::CompareText(ptr, c));
 			}
 
 			bool operator <(const char *c) const
 			{
-				return (Text::CompareTextLessThanCaseless(ptr, c));
+				return (Text::CompareTextLessThan(ptr, c));
 			}
 	};
 

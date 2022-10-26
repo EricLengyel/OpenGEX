@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -858,8 +854,16 @@ namespace Terathon
 			{
 				Component<type_struct, 2, 0>		x;
 				Component<type_struct, 2, 1>		y;
+
 				Subvec2D<type_struct, 2, 0, 1>		xy;
 				Subvec2D<type_struct, 2, 1, 0>		yx;
+
+				#ifdef TERATHON_SWIZZLE_REPEAT
+
+					const Subvec2D<type_struct, 2, 0, 0>	xx;
+					const Subvec2D<type_struct, 2, 1, 1>	yy;
+
+				#endif
 			};
 
 		protected:
@@ -947,18 +951,50 @@ namespace Terathon
 				Component<type_struct, 3, 0>				x;
 				Component<type_struct, 3, 1>				y;
 				Component<type_struct, 3, 2>				z;
+
 				Subvec2D<type_struct, 3, 0, 1>				xy;
 				Subvec2D<type_struct, 3, 0, 2>				xz;
 				Subvec2D<type_struct, 3, 1, 0>				yx;
 				Subvec2D<type_struct, 3, 1, 2>				yz;
 				Subvec2D<type_struct, 3, 2, 0>				zx;
 				Subvec2D<type_struct, 3, 2, 1>				zy;
+
 				Subvec3D<type_struct, anti, 3, 0, 1, 2>		xyz;
 				Subvec3D<type_struct, anti, 3, 0, 2, 1>		xzy;
 				Subvec3D<type_struct, anti, 3, 1, 0, 2>		yxz;
 				Subvec3D<type_struct, anti, 3, 1, 2, 0>		yzx;
 				Subvec3D<type_struct, anti, 3, 2, 0, 1>		zxy;
 				Subvec3D<type_struct, anti, 3, 2, 1, 0>		zyx;
+
+				#ifdef TERATHON_SWIZZLE_REPEAT
+
+					const Subvec2D<type_struct, 3, 0, 0>				xx;
+					const Subvec2D<type_struct, 3, 1, 1>				yy;
+					const Subvec2D<type_struct, 3, 2, 2>				zz;
+
+					const Subvec3D<type_struct, anti, 3, 0, 0, 0>		xxx;
+					const Subvec3D<type_struct, anti, 3, 0, 0, 1>		xxy;
+					const Subvec3D<type_struct, anti, 3, 0, 0, 2>		xxz;
+					const Subvec3D<type_struct, anti, 3, 0, 1, 0>		xyx;
+					const Subvec3D<type_struct, anti, 3, 0, 1, 1>		xyy;
+					const Subvec3D<type_struct, anti, 3, 0, 2, 0>		xzx;
+					const Subvec3D<type_struct, anti, 3, 0, 2, 2>		xzz;
+					const Subvec3D<type_struct, anti, 3, 1, 0, 0>		yxx;
+					const Subvec3D<type_struct, anti, 3, 1, 0, 1>		yxy;
+					const Subvec3D<type_struct, anti, 3, 1, 1, 0>		yyx;
+					const Subvec3D<type_struct, anti, 3, 1, 1, 1>		yyy;
+					const Subvec3D<type_struct, anti, 3, 1, 1, 2>		yyz;
+					const Subvec3D<type_struct, anti, 3, 1, 2, 1>		yzy;
+					const Subvec3D<type_struct, anti, 3, 1, 2, 2>		yzz;
+					const Subvec3D<type_struct, anti, 3, 2, 0, 0>		zxx;
+					const Subvec3D<type_struct, anti, 3, 2, 0, 2>		zxz;
+					const Subvec3D<type_struct, anti, 3, 2, 1, 1>		zyy;
+					const Subvec3D<type_struct, anti, 3, 2, 1, 2>		zyz;
+					const Subvec3D<type_struct, anti, 3, 2, 2, 0>		zzx;
+					const Subvec3D<type_struct, anti, 3, 2, 2, 1>		zzy;
+					const Subvec3D<type_struct, anti, 3, 2, 2, 2>		zzz;
+
+				#endif
 			};
 
 		protected:
@@ -1048,6 +1084,7 @@ namespace Terathon
 				Component<type_struct, 4, 1>					y;
 				Component<type_struct, 4, 2>					z;
 				Component<type_struct, 4, 3>					w;
+
 				Subvec2D<type_struct, 4, 0, 1>					xy;
 				Subvec2D<type_struct, 4, 0, 2>					xz;
 				Subvec2D<type_struct, 4, 0, 3>					xw;
@@ -1060,6 +1097,7 @@ namespace Terathon
 				Subvec2D<type_struct, 4, 3, 0>					wx;
 				Subvec2D<type_struct, 4, 3, 1>					wy;
 				Subvec2D<type_struct, 4, 3, 2>					wz;
+
 				Subvec3D<type_struct, anti, 4, 0, 1, 2>			xyz;
 				Subvec3D<type_struct, anti, 4, 0, 2, 1>			xzy;
 				Subvec3D<type_struct, anti, 4, 0, 1, 3>			xyw;
@@ -1084,6 +1122,7 @@ namespace Terathon
 				Subvec3D<type_struct, anti, 4, 3, 2, 0>			wzx;
 				Subvec3D<type_struct, anti, 4, 3, 1, 2>			wyz;
 				Subvec3D<type_struct, anti, 4, 3, 2, 1>			wzy;
+
 				Subvec4D<type_struct, anti, 4, 0, 1, 2, 3>		xyzw;
 				Subvec4D<type_struct, anti, 4, 0, 1, 3, 2>		xywz;
 				Subvec4D<type_struct, anti, 4, 0, 2, 1, 3>		xzyw;
@@ -1108,6 +1147,289 @@ namespace Terathon
 				Subvec4D<type_struct, anti, 4, 3, 1, 2, 0>		wyzx;
 				Subvec4D<type_struct, anti, 4, 3, 2, 0, 1>		wzxy;
 				Subvec4D<type_struct, anti, 4, 3, 2, 1, 0>		wzyx;
+
+				#ifdef TERATHON_SWIZZLE_REPEAT
+
+					const Subvec2D<type_struct, 4, 0, 0>				xx;
+					const Subvec2D<type_struct, 4, 1, 1>				yy;
+					const Subvec2D<type_struct, 4, 2, 2>				zz;
+					const Subvec2D<type_struct, 4, 3, 3>				ww;
+
+					const Subvec3D<type_struct, anti, 4, 0, 0, 0>		xxx;
+					const Subvec3D<type_struct, anti, 4, 0, 0, 1>		xxy;
+					const Subvec3D<type_struct, anti, 4, 0, 0, 2>		xxz;
+					const Subvec3D<type_struct, anti, 4, 0, 0, 3>		xxw;
+					const Subvec3D<type_struct, anti, 4, 0, 1, 0>		xyx;
+					const Subvec3D<type_struct, anti, 4, 0, 1, 1>		xyy;
+					const Subvec3D<type_struct, anti, 4, 0, 2, 0>		xzx;
+					const Subvec3D<type_struct, anti, 4, 0, 2, 2>		xzz;
+					const Subvec3D<type_struct, anti, 4, 0, 3, 0>		xwx;
+					const Subvec3D<type_struct, anti, 4, 0, 3, 3>		xww;
+					const Subvec3D<type_struct, anti, 4, 1, 0, 0>		yxx;
+					const Subvec3D<type_struct, anti, 4, 1, 0, 1>		yxy;
+					const Subvec3D<type_struct, anti, 4, 1, 1, 0>		yyx;
+					const Subvec3D<type_struct, anti, 4, 1, 1, 1>		yyy;
+					const Subvec3D<type_struct, anti, 4, 1, 1, 2>		yyz;
+					const Subvec3D<type_struct, anti, 4, 1, 1, 3>		yyw;
+					const Subvec3D<type_struct, anti, 4, 1, 2, 1>		yzy;
+					const Subvec3D<type_struct, anti, 4, 1, 2, 2>		yzz;
+					const Subvec3D<type_struct, anti, 4, 1, 3, 1>		ywy;
+					const Subvec3D<type_struct, anti, 4, 1, 3, 3>		yww;
+					const Subvec3D<type_struct, anti, 4, 2, 0, 0>		zxx;
+					const Subvec3D<type_struct, anti, 4, 2, 0, 2>		zxz;
+					const Subvec3D<type_struct, anti, 4, 2, 1, 1>		zyy;
+					const Subvec3D<type_struct, anti, 4, 2, 1, 2>		zyz;
+					const Subvec3D<type_struct, anti, 4, 2, 2, 0>		zzx;
+					const Subvec3D<type_struct, anti, 4, 2, 2, 1>		zzy;
+					const Subvec3D<type_struct, anti, 4, 2, 2, 2>		zzz;
+					const Subvec3D<type_struct, anti, 4, 2, 2, 3>		zzw;
+					const Subvec3D<type_struct, anti, 4, 2, 3, 2>		zwz;
+					const Subvec3D<type_struct, anti, 4, 2, 3, 3>		zww;
+					const Subvec3D<type_struct, anti, 4, 3, 0, 0>		wxx;
+					const Subvec3D<type_struct, anti, 4, 3, 0, 3>		wxw;
+					const Subvec3D<type_struct, anti, 4, 3, 1, 1>		wyy;
+					const Subvec3D<type_struct, anti, 4, 3, 1, 3>		wyw;
+					const Subvec3D<type_struct, anti, 4, 3, 2, 2>		wzz;
+					const Subvec3D<type_struct, anti, 4, 3, 2, 3>		wzw;
+					const Subvec3D<type_struct, anti, 4, 3, 3, 0>		wwx;
+					const Subvec3D<type_struct, anti, 4, 3, 3, 1>		wwy;
+					const Subvec3D<type_struct, anti, 4, 3, 3, 2>		wwz;
+					const Subvec3D<type_struct, anti, 4, 3, 3, 3>		www;
+
+					const Subvec4D<type_struct, anti, 4, 0, 0, 0, 0>	xxxx;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 0, 1>	xxxy;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 0, 2>	xxxz;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 0, 3>	xxxw;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 1, 0>	xxyx;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 1, 1>	xxyy;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 1, 2>	xxyz;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 1, 3>	xxyw;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 2, 0>	xxzx;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 2, 1>	xxzy;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 2, 2>	xxzz;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 2, 3>	xxzw;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 3, 0>	xxwx;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 3, 1>	xxwy;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 3, 2>	xxwz;
+					const Subvec4D<type_struct, anti, 4, 0, 0, 3, 3>	xxww;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 0, 0>	xyxx;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 0, 1>	xyxy;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 0, 2>	xyxz;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 0, 3>	xyxw;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 1, 0>	xyyx;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 1, 1>	xyyy;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 1, 2>	xyyz;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 1, 3>	xyyw;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 2, 0>	xyzx;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 2, 1>	xyzy;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 2, 2>	xyzz;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 3, 0>	xywx;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 3, 1>	xywy;
+					const Subvec4D<type_struct, anti, 4, 0, 1, 3, 3>	xyww;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 0, 0>	xzxx;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 0, 1>	xzxy;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 0, 2>	xzxz;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 0, 3>	xzxw;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 1, 0>	xzyx;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 1, 1>	xzyy;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 1, 2>	xzyz;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 2, 0>	xzzx;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 2, 1>	xzzy;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 2, 2>	xzzz;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 2, 3>	xzzw;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 3, 0>	xzwx;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 3, 2>	xzwz;
+					const Subvec4D<type_struct, anti, 4, 0, 2, 3, 3>	xzww;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 0, 0>	xwxx;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 0, 1>	xwxy;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 0, 2>	xwxz;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 0, 3>	xwxw;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 1, 0>	xwyx;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 1, 1>	xwyy;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 1, 3>	xwyw;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 2, 0>	xwzx;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 2, 2>	xwzz;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 2, 3>	xwzw;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 3, 0>	xwwx;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 3, 1>	xwwy;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 3, 2>	xwwz;
+					const Subvec4D<type_struct, anti, 4, 0, 3, 3, 3>	xwww;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 0, 0>	yxxx;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 0, 1>	yxxy;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 0, 2>	yxxz;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 0, 3>	yxxw;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 1, 0>	yxyx;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 1, 1>	yxyy;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 1, 2>	yxyz;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 1, 3>	yxyw;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 2, 0>	yxzx;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 2, 1>	yxzy;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 2, 2>	yxzz;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 3, 0>	yxwx;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 3, 1>	yxwy;
+					const Subvec4D<type_struct, anti, 4, 1, 0, 3, 3>	yxww;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 0, 0>	yyxx;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 0, 1>	yyxy;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 0, 2>	yyxz;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 0, 3>	yyxw;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 1, 0>	yyyx;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 1, 1>	yyyy;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 1, 2>	yyyz;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 1, 3>	yyyw;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 2, 0>	yyzx;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 2, 1>	yyzy;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 2, 2>	yyzz;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 2, 3>	yyzw;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 3, 0>	yywx;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 3, 1>	yywy;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 3, 2>	yywz;
+					const Subvec4D<type_struct, anti, 4, 1, 1, 3, 3>	yyww;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 0, 0>	yzxx;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 0, 1>	yzxy;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 0, 2>	yzxz;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 1, 0>	yzyx;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 1, 1>	yzyy;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 1, 2>	yzyz;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 1, 3>	yzyw;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 2, 0>	yzzx;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 2, 1>	yzzy;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 2, 2>	yzzz;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 2, 3>	yzzw;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 3, 1>	yzwy;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 3, 2>	yzwz;
+					const Subvec4D<type_struct, anti, 4, 1, 2, 3, 3>	yzww;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 0, 0>	ywxx;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 0, 1>	ywxy;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 0, 3>	ywxw;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 1, 0>	ywyx;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 1, 1>	ywyy;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 1, 2>	ywyz;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 1, 3>	ywyw;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 2, 1>	ywzy;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 2, 2>	ywzz;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 2, 3>	ywzw;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 3, 0>	ywwx;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 3, 1>	ywwy;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 3, 2>	ywwz;
+					const Subvec4D<type_struct, anti, 4, 1, 3, 3, 3>	ywww;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 0, 0>	zxxx;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 0, 1>	zxxy;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 0, 2>	zxxz;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 0, 3>	zxxw;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 1, 0>	zxyx;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 1, 1>	zxyy;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 1, 2>	zxyz;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 2, 0>	zxzx;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 2, 1>	zxzy;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 2, 2>	zxzz;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 2, 3>	zxzw;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 3, 0>	zxwx;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 3, 2>	zxwz;
+					const Subvec4D<type_struct, anti, 4, 2, 0, 3, 3>	zxww;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 0, 0>	zyxx;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 0, 1>	zyxy;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 0, 2>	zyxz;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 1, 0>	zyyx;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 1, 1>	zyyy;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 1, 2>	zyyz;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 1, 3>	zyyw;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 2, 0>	zyzx;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 2, 1>	zyzy;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 2, 2>	zyzz;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 2, 3>	zyzw;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 3, 1>	zywy;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 3, 2>	zywz;
+					const Subvec4D<type_struct, anti, 4, 2, 1, 3, 3>	zyww;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 0, 0>	zzxx;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 0, 1>	zzxy;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 0, 2>	zzxz;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 0, 3>	zzxw;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 1, 0>	zzyx;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 1, 1>	zzyy;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 1, 2>	zzyz;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 1, 3>	zzyw;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 2, 0>	zzzx;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 2, 1>	zzzy;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 2, 2>	zzzz;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 2, 3>	zzzw;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 3, 0>	zzwx;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 3, 1>	zzwy;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 3, 2>	zzwz;
+					const Subvec4D<type_struct, anti, 4, 2, 2, 3, 3>	zzww;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 0, 0>	zwxx;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 0, 2>	zwxz;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 0, 3>	zwxw;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 1, 1>	zwyy;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 1, 2>	zwyz;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 1, 3>	zwyw;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 2, 0>	zwzx;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 2, 1>	zwzy;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 2, 2>	zwzz;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 2, 3>	zwzw;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 3, 0>	zwwx;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 3, 1>	zwwy;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 3, 2>	zwwz;
+					const Subvec4D<type_struct, anti, 4, 2, 3, 3, 3>	zwww;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 0, 0>	wxxx;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 0, 1>	wxxy;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 0, 2>	wxxz;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 0, 3>	wxxw;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 1, 0>	wxyx;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 1, 1>	wxyy;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 1, 3>	wxyw;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 2, 0>	wxzx;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 2, 2>	wxzz;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 2, 3>	wxzw;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 3, 0>	wxwx;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 3, 1>	wxwy;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 3, 2>	wxwz;
+					const Subvec4D<type_struct, anti, 4, 3, 0, 3, 3>	wxww;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 0, 0>	wyxx;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 0, 1>	wyxy;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 0, 3>	wyxw;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 1, 0>	wyyx;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 1, 1>	wyyy;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 1, 2>	wyyz;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 1, 3>	wyyw;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 2, 1>	wyzy;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 2, 2>	wyzz;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 2, 3>	wyzw;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 3, 0>	wywx;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 3, 1>	wywy;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 3, 2>	wywz;
+					const Subvec4D<type_struct, anti, 4, 3, 1, 3, 3>	wyww;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 0, 0>	wzxx;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 0, 2>	wzxz;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 0, 3>	wzxw;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 1, 1>	wzyy;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 1, 2>	wzyz;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 1, 3>	wzyw;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 2, 0>	wzzx;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 2, 1>	wzzy;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 2, 2>	wzzz;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 2, 3>	wzzw;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 3, 0>	wzwx;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 3, 1>	wzwy;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 3, 2>	wzwz;
+					const Subvec4D<type_struct, anti, 4, 3, 2, 3, 3>	wzww;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 0, 0>	wwxx;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 0, 1>	wwxy;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 0, 2>	wwxz;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 0, 3>	wwxw;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 1, 0>	wwyx;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 1, 1>	wwyy;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 1, 2>	wwyz;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 1, 3>	wwyw;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 2, 0>	wwzx;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 2, 1>	wwzy;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 2, 2>	wwzz;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 2, 3>	wwzw;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 3, 0>	wwwx;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 3, 1>	wwwy;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 3, 2>	wwwz;
+					const Subvec4D<type_struct, anti, 4, 3, 3, 3, 3>	wwww;
+
+				#endif
 			};
 
 		protected:
@@ -1381,6 +1703,19 @@ namespace Terathon
 	};
 
 
+	template <typename A_type_struct, int A_count, int A_index_00, int A_index_01, int A_index_10, int A_index_11, typename B_type_struct, int B_count, int B_index_00, int B_index_01, int B_index_10, int B_index_11>
+	inline bool operator ==(const Submat2D<A_type_struct, A_count, A_index_00, A_index_01, A_index_10, A_index_11>& A, const Submat2D<B_type_struct, B_count, B_index_00, B_index_01, B_index_10, B_index_11>& B)
+	{
+		return ((A.data[A_index_00] == B.data[B_index_00]) && (A.data[A_index_01] == B.data[B_index_01]) && (A.data[A_index_10] == B.data[B_index_10]) && (A.data[A_index_11] == B.data[B_index_11]));
+	}
+
+	template <typename A_type_struct, int A_count, int A_index_00, int A_index_01, int A_index_10, int A_index_11, typename B_type_struct, int B_count, int B_index_00, int B_index_01, int B_index_10, int B_index_11>
+	inline bool operator !=(const Submat2D<A_type_struct, A_count, A_index_00, A_index_01, A_index_10, A_index_11>& A, const Submat2D<B_type_struct, B_count, B_index_00, B_index_01, B_index_10, B_index_11>& B)
+	{
+		return ((A.data[A_index_00] != B.data[B_index_00]) || (A.data[A_index_01] != B.data[B_index_01]) || (A.data[A_index_10] != B.data[B_index_10]) || (A.data[A_index_11] != B.data[B_index_11]));
+	}
+
+
 	template <typename type_struct, int index_00, int index_01, int index_02, int index_10, int index_11, int index_12, int index_20, int index_21, int index_22>
 	struct ConverterMatrix3D
 	{
@@ -1607,6 +1942,19 @@ namespace Terathon
 				return (*this);
 			}
 	};
+
+
+	template <typename A_type_struct, int A_count, int A_index_00, int A_index_01, int A_index_02, int A_index_10, int A_index_11, int A_index_12, int A_index_20, int A_index_21, int A_index_22, typename B_type_struct, int B_count, int B_index_00, int B_index_01, int B_index_02, int B_index_10, int B_index_11, int B_index_12, int B_index_20, int B_index_21, int B_index_22>
+	inline bool operator ==(const Submat3D<A_type_struct, A_count, A_index_00, A_index_01, A_index_02, A_index_10, A_index_11, A_index_12, A_index_20, A_index_21, A_index_22>& A, const Submat3D<B_type_struct, B_count, B_index_00, B_index_01, B_index_02, B_index_10, B_index_11, B_index_12, B_index_20, B_index_21, B_index_22>& B)
+	{
+		return ((A.data[A_index_00] == B.data[B_index_00]) && (A.data[A_index_01] == B.data[B_index_01]) && (A.data[A_index_02] == B.data[B_index_02]) && (A.data[A_index_10] == B.data[B_index_10]) && (A.data[A_index_11] == B.data[B_index_11]) && (A.data[A_index_12] == B.data[B_index_12]) && (A.data[A_index_20] == B.data[B_index_20]) && (A.data[A_index_21] == B.data[B_index_21]) && (A.data[A_index_22] == B.data[B_index_22]));
+	}
+
+	template <typename A_type_struct, int A_count, int A_index_00, int A_index_01, int A_index_02, int A_index_10, int A_index_11, int A_index_12, int A_index_20, int A_index_21, int A_index_22, typename B_type_struct, int B_count, int B_index_00, int B_index_01, int B_index_02, int B_index_10, int B_index_11, int B_index_12, int B_index_20, int B_index_21, int B_index_22>
+	inline bool operator !=(const Submat3D<A_type_struct, A_count, A_index_00, A_index_01, A_index_02, A_index_10, A_index_11, A_index_12, A_index_20, A_index_21, A_index_22>& A, const Submat3D<B_type_struct, B_count, B_index_00, B_index_01, B_index_02, B_index_10, B_index_11, B_index_12, B_index_20, B_index_21, B_index_22>& B)
+	{
+		return ((A.data[A_index_00] != B.data[B_index_00]) || (A.data[A_index_01] != B.data[B_index_01]) || (A.data[A_index_02] != B.data[B_index_02]) || (A.data[A_index_10] != B.data[B_index_10]) || (A.data[A_index_11] != B.data[B_index_11]) || (A.data[A_index_12] != B.data[B_index_12]) || (A.data[A_index_20] != B.data[B_index_20]) || (A.data[A_index_21] != B.data[B_index_21]) || (A.data[A_index_22] != B.data[B_index_22]));
+	}
 
 
 	template <typename type_struct, int index_00, int index_01, int index_02, int index_03, int index_10, int index_11, int index_12, int index_13, int index_20, int index_21, int index_22, int index_23, int index_30, int index_31, int index_32, int index_33>
@@ -1921,6 +2269,19 @@ namespace Terathon
 	};
 
 
+	template <typename A_type_struct, int A_count, int A_index_00, int A_index_01, int A_index_02, int A_index_03, int A_index_10, int A_index_11, int A_index_12, int A_index_13, int A_index_20, int A_index_21, int A_index_22, int A_index_23, int A_index_30, int A_index_31, int A_index_32, int A_index_33, typename B_type_struct, int B_count, int B_index_00, int B_index_01, int B_index_02, int B_index_03, int B_index_10, int B_index_11, int B_index_12, int B_index_13, int B_index_20, int B_index_21, int B_index_22, int B_index_23, int B_index_30, int B_index_31, int B_index_32, int B_index_33>
+	inline bool operator ==(const Submat4D<A_type_struct, A_count, A_index_00, A_index_01, A_index_02, A_index_03, A_index_10, A_index_11, A_index_12, A_index_13, A_index_20, A_index_21, A_index_22, A_index_23, A_index_30, A_index_31, A_index_32, A_index_33>& A, const Submat4D<B_type_struct, B_count, B_index_00, B_index_01, B_index_02, B_index_03, B_index_10, B_index_11, B_index_12, B_index_13, B_index_20, B_index_21, B_index_22, B_index_23, B_index_30, B_index_31, B_index_32, B_index_33>& B)
+	{
+		return ((A.data[A_index_00] == B.data[B_index_00]) && (A.data[A_index_01] == B.data[B_index_01]) && (A.data[A_index_02] == B.data[B_index_02]) && (A.data[A_index_03] == B.data[B_index_03]) && (A.data[A_index_10] == B.data[B_index_10]) && (A.data[A_index_11] == B.data[B_index_11]) && (A.data[A_index_12] == B.data[B_index_12]) && (A.data[A_index_13] == B.data[B_index_13]) && (A.data[A_index_20] == B.data[B_index_20]) && (A.data[A_index_21] == B.data[B_index_21]) && (A.data[A_index_22] == B.data[B_index_22]) && (A.data[A_index_23] == B.data[B_index_23]) && (A.data[A_index_30] == B.data[B_index_30]) && (A.data[A_index_31] == B.data[B_index_31]) && (A.data[A_index_32] == B.data[B_index_32]) && (A.data[A_index_33] == B.data[B_index_33]));
+	}
+
+	template <typename A_type_struct, int A_count, int A_index_00, int A_index_01, int A_index_02, int A_index_03, int A_index_10, int A_index_11, int A_index_12, int A_index_13, int A_index_20, int A_index_21, int A_index_22, int A_index_23, int A_index_30, int A_index_31, int A_index_32, int A_index_33, typename B_type_struct, int B_count, int B_index_00, int B_index_01, int B_index_02, int B_index_03, int B_index_10, int B_index_11, int B_index_12, int B_index_13, int B_index_20, int B_index_21, int B_index_22, int B_index_23, int B_index_30, int B_index_31, int B_index_32, int B_index_33>
+	inline bool operator !=(const Submat4D<A_type_struct, A_count, A_index_00, A_index_01, A_index_02, A_index_03, A_index_10, A_index_11, A_index_12, A_index_13, A_index_20, A_index_21, A_index_22, A_index_23, A_index_30, A_index_31, A_index_32, A_index_33>& A, const Submat4D<B_type_struct, B_count, B_index_00, B_index_01, B_index_02, B_index_03, B_index_10, B_index_11, B_index_12, B_index_13, B_index_20, B_index_21, B_index_22, B_index_23, B_index_30, B_index_31, B_index_32, B_index_33>& B)
+	{
+		return ((A.data[A_index_00] != B.data[B_index_00]) || (A.data[A_index_01] != B.data[B_index_01]) || (A.data[A_index_02] != B.data[B_index_02]) || (A.data[A_index_03] != B.data[B_index_03]) || (A.data[A_index_10] != B.data[B_index_10]) || (A.data[A_index_11] != B.data[B_index_11]) || (A.data[A_index_12] != B.data[B_index_12]) || (A.data[A_index_13] != B.data[B_index_13]) || (A.data[A_index_20] != B.data[B_index_20]) || (A.data[A_index_21] != B.data[B_index_21]) || (A.data[A_index_22] != B.data[B_index_22]) || (A.data[A_index_23] != B.data[B_index_23]) || (A.data[A_index_30] != B.data[B_index_30]) || (A.data[A_index_31] != B.data[B_index_31]) || (A.data[A_index_32] != B.data[B_index_32]) || (A.data[A_index_33] != B.data[B_index_33]));
+	}
+
+
 	template <typename type_struct>
 	class Mat2D
 	{
@@ -1999,6 +2360,19 @@ namespace Terathon
 				matrix = m;
 			}
 	};
+
+
+	template <typename type_struct>
+	inline bool operator ==(const Mat2D<type_struct>& m1, const Mat2D<type_struct>& m2)
+	{
+		return (m1.matrix == m2.matrix);
+	}
+
+	template <typename type_struct>
+	inline bool operator !=(const Mat2D<type_struct>& m1, const Mat2D<type_struct>& m2)
+	{
+		return (m1.matrix != m2.matrix);
+	}
 
 
 	template <typename type_struct>
@@ -2088,6 +2462,19 @@ namespace Terathon
 				matrix = m;
 			}
 	};
+
+
+	template <typename type_struct>
+	inline bool operator ==(const Mat3D<type_struct>& m1, const Mat3D<type_struct>& m2)
+	{
+		return (m1.matrix == m2.matrix);
+	}
+
+	template <typename type_struct>
+	inline bool operator !=(const Mat3D<type_struct>& m1, const Mat3D<type_struct>& m2)
+	{
+		return (m1.matrix != m2.matrix);
+	}
 
 
 	template <typename type_struct>
@@ -2200,6 +2587,19 @@ namespace Terathon
 				matrix = m;
 			}
 	};
+
+
+	template <typename type_struct>
+	inline bool operator ==(const Mat4D<type_struct>& m1, const Mat4D<type_struct>& m2)
+	{
+		return (m1.matrix == m2.matrix);
+	}
+
+	template <typename type_struct>
+	inline bool operator !=(const Mat4D<type_struct>& m1, const Mat4D<type_struct>& m2)
+	{
+		return (m1.matrix != m2.matrix);
+	}
 
 
 	template <typename m_type_struct, int m_count, int m_index_00, int m_index_01, int m_index_10, int m_index_11,

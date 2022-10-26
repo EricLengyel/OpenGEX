@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -18,9 +14,18 @@
 using namespace Terathon;
 
 
-ConstVector4D Zero4DType::zero = {0.0F, 0.0F, 0.0F, 0.0F};
+const ConstVector4D Vector4D::zero = {0.0F, 0.0F, 0.0F, 0.0F};
+const ConstVector4D Vector4D::origin = {0.0F, 0.0F, 0.0F, 1.0F};
 
-const Zero4DType Terathon::Zero4D = {};
+const ConstVector4D Vector4D::x_unit = {1.0F, 0.0F, 0.0F, 0.0F};
+const ConstVector4D Vector4D::y_unit = {0.0F, 1.0F, 0.0F, 0.0F};
+const ConstVector4D Vector4D::z_unit = {0.0F, 0.0F, 1.0F, 0.0F};
+const ConstVector4D Vector4D::w_unit = {0.0F, 0.0F, 0.0F, 1.0F};
+
+const ConstVector4D Vector4D::minus_x_unit = {-1.0F, 0.0F, 0.0F, 0.0F};
+const ConstVector4D Vector4D::minus_y_unit = {0.0F, -1.0F, 0.0F, 0.0F};
+const ConstVector4D Vector4D::minus_z_unit = {0.0F, 0.0F, -1.0F, 0.0F};
+const ConstVector4D Vector4D::minus_w_unit = {0.0F, 0.0F, 0.0F, -1.0F};
 
 
 Vector4D& Vector4D::RotateAboutX(float angle)

@@ -1,13 +1,9 @@
 //
-// This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// This file is part of the Terathon Container Library, by Eric Lengyel.
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -19,7 +15,7 @@
 //# \prefix		Utilities/
 
 
-#include "TSBasic.h"
+#include "TSPlatform.h"
 
 
 #define TERATHON_ARRAY 1
@@ -120,6 +116,7 @@ namespace Terathon
 	//# \function	Array::AppendArrayElement		Adds an object to the end of an array.
 	//
 	//# \proto	template <typename T> type *AppendArrayElement(T&& element);
+	//# \proto	template <typename T> type *AppendArrayElement(void);
 	//
 	//# \param	element		The new element to add to the array.
 	//
@@ -127,6 +124,7 @@ namespace Terathon
 	//# The $AppendArrayElement$ function increases the size of an array by one and either copy-constructs
 	//# or move-constructs the new element using the object referenced by the $element$ parameter,
 	//# depending on whether an lvalue reference or rvalue reference is passed to the function.
+	//# If the parameter is omitted, then a default-constructed element is appended to the array.
 	//# The return value is a pointer to the newly appended element in the array.
 	//
 	//# \also	$@Array::InsertArrayElement@$
@@ -292,6 +290,8 @@ namespace Terathon
 			}
 
 			int32 FindArrayElementIndex(const type& element) const;
+
+			bool operator ==(const ImmutableArray& array) const;
 	};
 
 	template <typename type>
@@ -306,6 +306,26 @@ namespace Terathon
 		}
 
 		return (-1);
+	}
+
+	template <typename type>
+	bool ImmutableArray<type>::operator ==(const ImmutableArray<type>& array) const
+	{
+		int32 count = elementCount;
+		if (count != array.elementCount)
+		{
+			return (false);
+		}
+
+		for (machine a = 0; a < count; a++)
+		{
+			if (arrayPointer[a] != array.arrayPointer[a])
+			{
+				return (false);
+			}
+		}
+
+		return (true);
 	}
 
 
@@ -455,7 +475,11 @@ namespace Terathon
 	template <typename type, int32 baseCount>
 	void Array<type, baseCount>::SetReservedCount(int32 count)
 	{
-		reservedCount = Max(Max(count, 4), reservedCount + Max((reservedCount / 2 + 3) & ~3, baseCount));
+		count = (count >= 4) ? count : 4;
+		int32 expandCount = (reservedCount / 2 + 3) & ~3;
+		int32 totalCount = reservedCount + ((expandCount >= baseCount) ? expandCount : baseCount);
+		reservedCount = (totalCount >= count) ? totalCount : count;
+
 		type *newPointer = reinterpret_cast<type *>(new char[sizeof(type) * reservedCount]);
 
 		type *pointer = arrayPointer;
@@ -765,7 +789,11 @@ namespace Terathon
 	template <typename type>
 	void Array<type, 0>::SetReservedCount(int32 count)
 	{
-		reservedCount = Max(Max(count, 4), reservedCount + Max((reservedCount / 2 + 3) & ~3, 4));
+		count = (count >= 4) ? count : 4;
+		int32 expandCount = (reservedCount / 2 + 3) & ~3;
+		int32 totalCount = reservedCount + ((expandCount >= 4) ? expandCount : 4);
+		reservedCount = (totalCount >= count) ? totalCount : count;
+
 		type *newPointer = reinterpret_cast<type *>(new char[sizeof(type) * reservedCount]);
 
 		type *pointer = arrayPointer;

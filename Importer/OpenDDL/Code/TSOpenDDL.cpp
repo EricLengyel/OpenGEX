@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon OpenDDL Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -1017,7 +1013,7 @@ DataResult DataDescription::ParseStructures(const char *& text, Structure *root)
 	return (kDataOkay);
 }
 
-DataResult DataDescription::ProcessText(const char *text)
+DataResult DataDescription::ParseText(const char *text)
 {
 	rootStructure.PurgeSubtree();
 
@@ -1035,31 +1031,52 @@ DataResult DataDescription::ProcessText(const char *text)
 		{
 			result = kDataSyntaxError;
 		}
+
+		if (result != kDataOkay)
+		{
+			rootStructure.PurgeSubtree();
+
+			int32 line = 1;
+			while (text != start)
+			{
+				if ((--text)[0] == '\n')
+				{
+					line++;
+				}
+			}
+
+			errorLine = line;
+		}
 	}
 
+	return (result);
+}
+
+DataResult DataDescription::ProcessText(const char *text)
+{
+	DataResult result = ParseText(text);
 	if (result == kDataOkay)
 	{
 		result = ProcessData();
-		if ((result != kDataOkay) && (errorStructure))
+		if (result != kDataOkay)
 		{
-			text = errorStructure->textLocation;
-		}
-	}
-
-	if (result != kDataOkay)
-	{
-		rootStructure.PurgeSubtree();
-
-		int32 line = 1;
-		while (text != start)
-		{
-			if ((--text)[0] == '\n')
+			if (errorStructure)
 			{
-				line++;
+				const char *start = text;
+				text = errorStructure->textLocation;
+
+				int32 line = 1;
+				while (text != start)
+				{
+					if ((--text)[0] == '\n')
+					{
+						line++;
+					}
+				}
+
+				errorLine = line;
 			}
 		}
-
-		errorLine = line;
 	}
 
 	return (result);

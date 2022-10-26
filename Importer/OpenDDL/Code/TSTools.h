@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -29,12 +25,12 @@ namespace Terathon
 {
 	#ifdef TERATHON_DEBUG
 
-		TERATHON_API void Fatal(const char *c);
-		TERATHON_API void Assert(bool b, const char *c);
+		TERATHON_API void Fatal(const char *c = "");
+		TERATHON_API void Assert(bool b, const char *c = "");
 
 	#else
 
-		inline void Fatal(const char *)
+		inline void Fatal(const char * = "")
 		{
 		}
 

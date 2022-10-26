@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon OpenDDL Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -212,7 +208,7 @@ namespace Terathon
 	//
 	//# \also	$@StructureRef::GetGlobalRefFlag@$
 	//# \also	$@StructureRef::AddName@$
-	//# \also	$@StructureRef::Reset@$
+	//# \also	$@StructureRef::ResetRef@$
 	//# \also	$@Utilities/Array@$
 
 
@@ -227,7 +223,7 @@ namespace Terathon
 	//
 	//# \also	$@StructureRef::GetNameArray@$
 	//# \also	$@StructureRef::AddName@$
-	//# \also	$@StructureRef::Reset@$
+	//# \also	$@StructureRef::ResetRef@$
 
 
 	//# \function	StructureRef::AddName		Adds a name to a reference.
@@ -243,17 +239,17 @@ namespace Terathon
 	//
 	//# \also	$@StructureRef::GetNameArray@$
 	//# \also	$@StructureRef::GetGlobalRefFlag@$
-	//# \also	$@StructureRef::Reset@$
+	//# \also	$@StructureRef::ResetRef@$
 
 
-	//# \function	StructureRef::Reset		Resets a reference to an empty sequence of names.
+	//# \function	StructureRef::ResetRef		Resets a reference to an empty sequence of names.
 	//
-	//# \proto	void Reset(bool global = true);
+	//# \proto	void ResetRef(bool global = true);
 	//
 	//# \param	global		A boolean value that indicates whether the reference is global.
 	//
 	//# \desc
-	//# The $Reset$ function removes all of the names stored in a structure reference, making the name
+	//# The $ResetRef$ function removes all of the names stored in a structure reference, making the name
 	//# array empty. Upon return, the structure reference is a null reference. New names can be added
 	//# to the reference by calling the $@StructureRef::AddName@$ function. The $global$ parameter
 	//# specifies whether the first name added is a global name or local name.
@@ -290,7 +286,14 @@ namespace Terathon
 				nameArray.AppendArrayElement(static_cast<String<>&&>(name));
 			}
 
-			TERATHON_API void Reset(bool global = true);
+			TERATHON_API void ResetRef(bool global = true);
+
+			bool operator ==(const StructureRef& ref) const;
+
+			bool operator !=(const StructureRef& ref) const
+			{
+				return (!operator ==(ref));
+			}
 	};
 
 

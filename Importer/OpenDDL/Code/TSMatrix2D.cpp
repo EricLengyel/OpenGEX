@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -17,7 +13,7 @@
 using namespace Terathon;
 
 
-const ConstMatrix2D Terathon::Identity2D = {{{1.0F, 0.0F}, {0.0F, 1.0F}}};
+const ConstMatrix2D Matrix2D::identity = {{{1.0F, 0.0F}, {0.0F, 1.0F}}};
 
 
 Matrix2D::Matrix2D(float n00, float n01, float n10, float n11) : Mat2D<TypeMatrix2D>(n00, n01, n10, n11)

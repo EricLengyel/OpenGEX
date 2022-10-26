@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -31,6 +27,7 @@ namespace Terathon
 	class Matrix3D;
 	class Matrix4D;
 	class Transform4D;
+	struct ConstMatrix3D;
 
 
 	//# \class	Matrix3D	Encapsulates a 3&#x202F;&times;&#x202F;3 matrix.
@@ -272,6 +269,8 @@ namespace Terathon
 	{
 		public:
 
+			TERATHON_API static const ConstMatrix3D identity;
+
 			inline Matrix3D() = default;
 
 			TERATHON_API Matrix3D(float n00, float n01, float n02, float n10, float n11, float n12, float n20, float n21, float n22);
@@ -364,7 +363,7 @@ namespace Terathon
 
 	inline Point3D operator *(const Matrix3D& m, const Point3D& p)
 	{
-		return (Zero3D + m.matrix * p.xyz);
+		return (Point3D::origin + m.matrix * p.xyz);
 	}
 
 	inline Bivector3D operator *(const Bivector3D& v, const Matrix3D& m)
@@ -428,9 +427,6 @@ namespace Terathon
 			return (reinterpret_cast<const Matrix3D&>(*this)[j]);
 		}
 	};
-
-
-	TERATHON_API extern const ConstMatrix3D Identity3D;
 
 
 	TERATHON_API float Determinant(const Matrix3D& m);

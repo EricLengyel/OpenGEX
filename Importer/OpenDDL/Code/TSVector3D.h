@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -30,6 +26,7 @@ namespace Terathon
 {
 	class Vector3D;
 	class Bivector3D;
+	class Origin3D;
 	struct ConstVector3D;
 
 
@@ -109,6 +106,15 @@ namespace Terathon
 	//# \action		Vector3D operator *(const Vector3D& a, const Vector3D& b);
 	//#				Returns the componentwise product of the vectors $a$ and $b$
 	//
+	//# \action		float BulkNorm(const Vector3D& v);
+	//#				Returns the bulk norm of the vector $v$.
+	//
+	//# \action		float WeightNorm(const Vector3D& v);
+	//#				Returns the weight norm of the vector $v$.
+	//
+	//# \action		Point2D Unitize(const Vector3D& v);
+	//#				Returns the 2D point represented by the vector $v$ after unitization.
+	//
 	//# \action		float Magnitude(const Vector3D& v);
 	//#				Returns the magnitude of the vector $v$.
 	//
@@ -162,14 +168,17 @@ namespace Terathon
 	//# The return value is a reference to the vector object.
 
 
-	//# \function	Vector3D::GetPoint2D		Returns a reference to a $@Point2D@$ object.
+	//# \function	Vector3D::Unitize		Unitizes the weight of a 3D vector.
 	//
-	//# \proto	Point2D& GetPoint2D(void);
-	//# \proto	const Point2D& GetPoint2D(void) const;
+	//# \proto	Vector3D& Unitize(void);
 	//
 	//# \desc
-	//# The $GetPoint2D$ function returns a reference to a $@Point2D@$ object that refers to
-	//# the same data contained in the <i>x</i> and <i>y</i> coordinates of a $Vector3D$ object.
+	//# The $Unitize$ function multiplies a 3D vector by the inverse of its <i>z</i> coordinate,
+	//# transforming it into a homogeneous point having a unit weight. If the <i>z</i> coordinate is
+	//# zero, then the resulting <i>x</i> and <i>y</i> coordinates are undefined.
+	//# In all cases, the <i>z</i> coordinate is 1.0 when this function returns.
+	//#
+	//# The return value is a reference to the vector object.
 
 
 	//# \function	Vector3D::RotateAboutX		Rotates a vector about the <i>x</i> axis.
@@ -253,6 +262,16 @@ namespace Terathon
 	{
 		public:
 
+			TERATHON_API static const ConstVector3D zero;
+
+			TERATHON_API static const ConstVector3D x_unit;
+			TERATHON_API static const ConstVector3D y_unit;
+			TERATHON_API static const ConstVector3D z_unit;
+
+			TERATHON_API static const ConstVector3D minus_x_unit;
+			TERATHON_API static const ConstVector3D minus_y_unit;
+			TERATHON_API static const ConstVector3D minus_z_unit;
+
 			inline Vector3D() = default;
 
 			Vector3D(float a, float b, float c) : Vec3D<TypeVector3D>(a, b, c) {}
@@ -294,9 +313,16 @@ namespace Terathon
 				xyz.Set(v.x, v.y, c);
 			}
 
+			Point2D& GetPoint2D(void)
+			{
+				Vector2D& v = xy;
+				return (static_cast<Point2D&>(v));
+			}
+
 			const Point2D& GetPoint2D(void) const
 			{
-				return (reinterpret_cast<const Point2D&>(x));
+				const Vector2D& v = xy;
+				return (static_cast<const Point2D&>(v));
 			}
 
 			Vector3D& operator =(const Vector3D& v)
@@ -401,13 +427,12 @@ namespace Terathon
 				return (static_cast<Vector3D&>(xyz.Normalize()));
 			}
 
-			TERATHON_API static const ConstVector3D x_unit;
-			TERATHON_API static const ConstVector3D y_unit;
-			TERATHON_API static const ConstVector3D z_unit;
-
-			TERATHON_API static const ConstVector3D minus_x_unit;
-			TERATHON_API static const ConstVector3D minus_y_unit;
-			TERATHON_API static const ConstVector3D minus_z_unit;
+			Vector3D& Unitize(void)
+			{
+				xy /= z;
+				z = 1.0F;
+				return (*this);
+			}
 
 			TERATHON_API Vector3D& RotateAboutX(float angle);
 			TERATHON_API Vector3D& RotateAboutY(float angle);
@@ -415,6 +440,11 @@ namespace Terathon
 			TERATHON_API Vector3D& RotateAboutAxis(float angle, const Bivector3D& axis);
 	};
 
+
+	inline Vector3D operator ~(const Vector3D& v)
+	{
+		return (Vector3D(-v.x, -v.y, -v.z));
+	}
 
 	inline Vector3D operator -(const Vector3D& v)
 	{
@@ -486,24 +516,30 @@ namespace Terathon
 		return (a.data[index_x] * b.x + a.data[index_y] * b.y + a.data[index_z] * b.z);
 	}
 
-	inline float Dot(const Vector3D& a, const Vector3D& b)
+	inline const Vector3D& Reverse(const Vector3D& v)
 	{
-		return (a.x * b.x + a.y * b.y + a.z * b.z);
+		return (v);
 	}
 
-	inline Vector3D Cross(const Vector3D& a, const Vector3D& b)
+	inline Vector3D Antireverse(const Vector3D& v)
 	{
-		return (Vector3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x));
+		return (~v);
 	}
 
-	inline Vector3D Project(const Vector3D& a, const Vector3D& b)
+	inline float BulkNorm(const Vector3D& v)
 	{
-		return (b * Dot(a, b));
+		return (Sqrt(v.x * v.x + v.y * v.y));
 	}
 
-	inline Vector3D Reject(const Vector3D& a, const Vector3D& b)
+	inline float WeightNorm(const Vector3D& v)
 	{
-		return (a - b * Dot(a, b));
+		return (Fabs(v.z));
+	}
+
+	inline Point2D Unitize(const Vector3D& v)
+	{
+		float s = 1.0F / v.z;
+		return (Point2D(v.x * s, v.y * s));
 	}
 
 	inline float Magnitude(const Vector3D& v)
@@ -523,7 +559,27 @@ namespace Terathon
 
 	inline Vector3D Normalize(const Vector3D& v)
 	{
-		return (v * InverseSqrt(v.x * v.x + v.y * v.y + v.z * v.z));
+		return (v * InverseMag(v));
+	}
+
+	inline float Dot(const Vector3D& a, const Vector3D& b)
+	{
+		return (a.x * b.x + a.y * b.y + a.z * b.z);
+	}
+
+	inline Vector3D Cross(const Vector3D& a, const Vector3D& b)
+	{
+		return (Vector3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x));
+	}
+
+	inline Vector3D Project(const Vector3D& a, const Vector3D& b)
+	{
+		return (b * Dot(a, b));
+	}
+
+	inline Vector3D Reject(const Vector3D& a, const Vector3D& b)
+	{
+		return (a - b * Dot(a, b));
 	}
 
 	inline Vector3D Floor(const Vector3D& v)
@@ -618,22 +674,14 @@ namespace Terathon
 	{
 		public:
 
+			TERATHON_API static const Origin3D origin;
+
 			inline Point3D() = default;
 
 			Point3D(float a, float b, float c) : Vector3D(a, b, c) {}
 			Point3D(const Vector2D& v) : Vector3D(v) {}
 			Point3D(const Vector2D& v, float c) : Vector3D(v, c) {}
-			Point3D(const Vector3D& p) : Vector3D(p) {}
-
-			Point2D& GetPoint2D(void)
-			{
-				return (reinterpret_cast<Point2D&>(x));
-			}
-
-			const Point2D& GetPoint2D(void) const
-			{
-				return (reinterpret_cast<const Point2D&>(x));
-			}
+			explicit Point3D(const Vector3D& p) : Vector3D(p) {}
 
 			Point3D& operator =(const Vector3D& v)
 			{
@@ -902,67 +950,59 @@ namespace Terathon
 	};
 
 
-	class Zero3DType
+	class Origin3D
 	{
 		private:
 
-			TERATHON_API static ConstPoint3D zero;
+			TERATHON_API static const ConstPoint3D origin;
 
 		public:
 
-			operator const Vector3D&(void) const
-			{
-				return (zero);
-			}
-
 			operator const Point3D&(void) const
 			{
-				return (zero);
+				return (origin);
 			}
 
 			const Point3D *operator &(void) const
 			{
-				return (&zero);
+				return (&origin);
 			}
 	};
 
 
-	inline const Point3D& operator +(const Zero3DType&, const Vector3D& v)
+	inline const Point3D& operator +(const Origin3D&, const Vector3D& v)
 	{
 		return (static_cast<const Point3D&>(v));
 	}
 
 	template <typename type_struct, bool anti, int count, int index_x, int index_y, int index_z>
-	inline Point3D operator +(const Zero3DType&, const Subvec3D<type_struct, anti, count, index_x, index_y, index_z>& v)
+	inline Point3D operator +(const Origin3D&, const Subvec3D<type_struct, anti, count, index_x, index_y, index_z>& v)
 	{
 		return (Point3D(v.data[index_x], v.data[index_y], v.data[index_z]));
 	}
 
 	template <typename type_struct, bool anti, int count>
-	inline const Point3D& operator +(const Zero3DType&, const Subvec3D<type_struct, anti, count, 0, 1, 2>& v)
+	inline const Point3D& operator +(const Origin3D&, const Subvec3D<type_struct, anti, count, 0, 1, 2>& v)
 	{
 		return (reinterpret_cast<const Point3D&>(v.data[0]));
 	}
 
 	template <typename type_struct, bool anti, int count>
-	inline const Point3D& operator +(const Zero3DType&, const Subvec3D<type_struct, anti, count, 1, 2, 3>& v)
+	inline const Point3D& operator +(const Origin3D&, const Subvec3D<type_struct, anti, count, 1, 2, 3>& v)
 	{
 		return (reinterpret_cast<const Point3D&>(v.data[1]));
 	}
 
-	inline Point3D operator -(const Zero3DType&, const Vector3D& v)
+	inline Point3D operator -(const Origin3D&, const Vector3D& v)
 	{
 		return (Point3D(-v.x, -v.y, -v.z));
 	}
 
 	template <typename type_struct, bool anti, int count, int index_x, int index_y, int index_z>
-	inline Point3D operator -(const Zero3DType&, const Subvec3D<type_struct, anti, count, index_x, index_y, index_z>& v)
+	inline Point3D operator -(const Origin3D&, const Subvec3D<type_struct, anti, count, index_x, index_y, index_z>& v)
 	{
 		return (Point3D(-v.data[index_x], -v.data[index_y], -v.data[index_z]));
 	}
-
-
-	TERATHON_API extern const Zero3DType Zero3D;
 }
 
 

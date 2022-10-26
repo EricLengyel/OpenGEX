@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -247,6 +243,8 @@ namespace Terathon
 				blue *= s;
 				return (*this);
 			}
+
+			TERATHON_API uint32 GetPackedColorRGB9E5(void) const;
 
 			TERATHON_API void GetHexString(char *string) const;
 			TERATHON_API ColorRGB& SetHexString(const char *string);
@@ -1006,10 +1004,10 @@ namespace Terathon
 
 			explicit Color4U(const ColorRGBA& c)
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
-				alpha = uint8(c.alpha * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
+				alpha = uint8(c.alpha * 255.0F + 0.5F);
 			}
 
 			Color4U& Set(uint32 r, uint32 g, uint32 b, uint32 a = 255)
@@ -1031,19 +1029,19 @@ namespace Terathon
 
 			Color4U& Set(const ColorRGBA& c)
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
-				alpha = uint8(c.alpha * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
+				alpha = uint8(c.alpha * 255.0F + 0.5F);
 				return (*this);
 			}
 
 			void Set(const ColorRGBA& c) volatile
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
-				alpha = uint8(c.alpha * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
+				alpha = uint8(c.alpha * 255.0F + 0.5F);
 			}
 
 			Color4U& Clear(void)
@@ -1061,11 +1059,6 @@ namespace Terathon
 			uint32 GetPackedColor(void) const
 			{
 				return (reinterpret_cast<const uint32&>(*this));
-			}
-
-			uint32 GetPackedRGBColor(void) const
-			{
-				return (reinterpret_cast<const uint32&>(*this) & 0x00FFFFFF);
 			}
 
 			Color4U& SetPackedColor(uint32 c)
@@ -1092,36 +1085,36 @@ namespace Terathon
 
 			Color4U& operator =(const ColorRGB& c)
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
 				alpha = 0xFF;
 				return (*this);
 			}
 
 			void operator =(const ColorRGB& c) volatile
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
 				alpha = 0xFF;
 			}
 
 			Color4U& operator =(const ColorRGBA& c)
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
-				alpha = uint8(c.alpha * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
+				alpha = uint8(c.alpha * 255.0F + 0.5F);
 				return (*this);
 			}
 
 			void operator =(const ColorRGBA& c) volatile
 			{
-				red = uint8(c.red * 255.0F);
-				green = uint8(c.green * 255.0F);
-				blue = uint8(c.blue * 255.0F);
-				alpha = uint8(c.alpha * 255.0F);
+				red = uint8(c.red * 255.0F + 0.5F);
+				green = uint8(c.green * 255.0F + 0.5F);
+				blue = uint8(c.blue * 255.0F + 0.5F);
+				alpha = uint8(c.alpha * 255.0F + 0.5F);
 			}
 
 			bool operator ==(const Color4U& c) const

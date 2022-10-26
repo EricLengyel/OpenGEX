@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -99,14 +95,15 @@ namespace Terathon
 	template <int32 mod>
 	inline int32 IncMod(int32 x)
 	{
-		return ((x + 1) & ((x - (mod - 1)) >> 31));
+		int32 y = x + 1;
+		return ((y < mod) ? y : 0);
 	}
 
 	template <int32 mod>
 	inline int32 DecMod(int32 x)
 	{
-		x--;
-		return (x + ((x >> 31) & mod));
+		int32 y = x - 1;
+		return ((y < 0) ? mod - 1 : y);
 	}
 
 	inline int32 OverflowZero(int32 x, int32 y)

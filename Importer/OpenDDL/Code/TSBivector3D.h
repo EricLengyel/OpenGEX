@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -43,12 +39,12 @@ namespace Terathon
 	//
 	//# The $Bivector3D$ class encapsulates a 3D bivector.
 	//
-	//# \def	class Bivector3D
+	//# \def	class Bivector3D : public Antivec3D<TypeBivector3D>
 	//
 	//# \ctor	Bivector3D();
 	//# \ctor	Bivector3D(float a, float b, float c);
-	//# \ctor	Bivector4D(const Point2D& p, const Point2D& q);
-	//# \ctor	Bivector4D(const Point2D& p, const Vector2D& v);
+	//# \ctor	Bivector3D(const Point2D& p, const Point2D& q);
+	//# \ctor	Bivector3D(const Point2D& p, const Vector2D& v);
 	//
 	//# \param	a		The value of the <b>e</b><sub>23</sub> coordinate.
 	//# \param	b		The value of the <b>e</b><sub>31</sub> coordinate.
@@ -136,6 +132,8 @@ namespace Terathon
 	//# \action		Vector3D Project(const Vector3D& a, const Bivector3D& b);
 	//#				Returns (<b>b&#x0332;</b>&#x202F;&#x2227;&#x202F;<b>a</b>)&#x202F;&#x2228;&#x202F;<b>b</b>, which is the projection of $a$ onto $b$ under the assumption that the magnitude of $b$ is one.
 	//
+	//# \privbase	Antivec3D	Antivectors use a generic base class to store their components.
+	//
 	//# \also	$@Vector3D@$
 	//# \also	$@Vector2D@$
 	//# \also	$@Point2D@$
@@ -167,6 +165,16 @@ namespace Terathon
 	class Bivector3D : public Antivec3D<TypeBivector3D>
 	{
 		public:
+
+			TERATHON_API static const ConstBivector3D zero;
+
+			TERATHON_API static const ConstBivector3D yz_unit;
+			TERATHON_API static const ConstBivector3D zx_unit;
+			TERATHON_API static const ConstBivector3D xy_unit;
+
+			TERATHON_API static const ConstBivector3D minus_yz_unit;
+			TERATHON_API static const ConstBivector3D minus_zx_unit;
+			TERATHON_API static const ConstBivector3D minus_xy_unit;
 
 			inline Bivector3D() = default;
 
@@ -284,14 +292,6 @@ namespace Terathon
 			{
 				return (static_cast<Bivector3D&>(xyz.Normalize()));
 			}
-
-			TERATHON_API static const ConstBivector3D yz_unit;
-			TERATHON_API static const ConstBivector3D zx_unit;
-			TERATHON_API static const ConstBivector3D xy_unit;
-
-			TERATHON_API static const ConstBivector3D minus_yz_unit;
-			TERATHON_API static const ConstBivector3D minus_zx_unit;
-			TERATHON_API static const ConstBivector3D minus_xy_unit;
 	};
 
 
@@ -470,24 +470,6 @@ namespace Terathon
 			return (reinterpret_cast<const Bivector3D *>(this));
 		}
 	};
-
-
-	class Bizero3DType
-	{
-		private:
-
-			TERATHON_API static ConstBivector3D zero;
-
-		public:
-
-			operator const Bivector3D&(void) const
-			{
-				return (zero);
-			}
-	};
-
-
-	TERATHON_API extern const Bizero3DType Bizero3D;
 }
 
 

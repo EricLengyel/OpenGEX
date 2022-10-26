@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -82,7 +78,7 @@ const float Math::one_over_ln_10 =		0.43429448190325182765112891891661F;
 const float Math::ln_256 =				5.5451774444795624753378569716654F;
 
 
-alignas(128) const uint32 Terathon::Math::trigTable[256][2] =
+alignas(64) const uint32 Terathon::Math::trigTable[256][2] =
 {
 	{0x3F800000, 0x00000000}, {0x3F7FEC43, 0x3CC90AB0}, {0x3F7FB10F, 0x3D48FB30}, {0x3F7F4E6D, 0x3D96A905}, {0x3F7EC46D, 0x3DC8BD36}, {0x3F7E1324, 0x3DFAB273}, {0x3F7D3AAC, 0x3E164083}, {0x3F7C3B28, 0x3E2F10A3},
 	{0x3F7B14BE, 0x3E47C5C2}, {0x3F79C79D, 0x3E605C13}, {0x3F7853F8, 0x3E78CFCD}, {0x3F76BA07, 0x3E888E94}, {0x3F74FA0B, 0x3E94A031}, {0x3F731447, 0x3EA09AE5}, {0x3F710908, 0x3EAC7CD4}, {0x3F6ED89E, 0x3EB8442A},
@@ -243,7 +239,7 @@ float Terathon::Sin(float x)
 
 		vec_float sine = VecMaddScalar(sine_alpha, cosine_beta, VecMulScalar(cosine_alpha, sine_beta));
 
-		VecStoreX((x < 0.0F) ? VecNegate(sine) : sine, &result);
+		VecStoreX((x < 0.0F) ? -sine : sine, &result);
 		return (result);
 
 	#else
@@ -367,7 +363,7 @@ void Terathon::CosSin(float x, float *c, float *s)
 		vec_float cosine = VecSubScalar(VecMulScalar(cosine_alpha, cosine_beta), VecMulScalar(sine_alpha, sine_beta));
 
 		VecStoreX(cosine, c);
-		VecStoreX((x < 0.0F) ? VecNegate(sine) : sine, s);
+		VecStoreX((x < 0.0F) ? -sine : sine, s);
 
 	#else
 

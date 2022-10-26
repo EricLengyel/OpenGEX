@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon OpenDDL Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -52,7 +48,7 @@ namespace Terathon
 	{
 		kDataMissingSubstructure			= 'MSSB',		//## A structure is missing a substructure of a required type.
 		kDataExtraneousSubstructure			= 'EXSB',		//## A structure contains too many substructures of a legal type.
-		kDataInvalidDataFormat				= 'IVDF',		//## The primitive data contained in a structure uses an invalid format (type, subarray size, or state data).
+		kDataInvalidDataFormat				= 'IVDF',		//## The primitive data contained in a structure uses an invalid format (type, element count, subarray size, or state data).
 		kDataBrokenRef						= 'BREF'		//## The target of a reference does not exist.
 	};
 
@@ -654,6 +650,11 @@ namespace Terathon
 				return (dataArray.GetArrayElementCount() / GetArraySize());
 			}
 
+			void SetArrayDataElementCount(int32 count)
+			{
+				dataArray.SetArrayElementCount(GetArraySize() * count);
+			}
+
 			const PrimType *GetArrayDataElement(int32 index) const
 			{
 				return (&dataArray[GetArraySize() * index]);
@@ -833,9 +834,9 @@ namespace Terathon
 	//# Any implementation of the $@Structure::ProcessData@$ function may make the following assumptions about the data:
 	//#
 	//# 1. The input text is syntactically valid.<br/>
-	//# 2. Each structure described in the input text was recognized and successfully created.<br/>
-	//# 3. Each structure is valid as indicated by the $@Structure::ValidateSubstructure@$ function called for its enclosing structure.<br/>
-	//# 4. Each property identifier is valid as indicated by the $@Structure::ValidateProperty@$ function called for the associated structure, and it has a value of the proper type assigned to it.<br/>
+	//# 2. If an unrecognized structure was encountered in the input text, then it was removed along with all of its substructures.<br/>
+	//# 3. Each recognized structure is valid as indicated by the $@Structure::ValidateSubstructure@$ function called for its enclosing structure.<br/>
+	//# 4. If a property was valid as indicated by the $@Structure::ValidateProperty@$ function called for the associated structure, then it has a value of the proper type assigned to it. Unrecognized properties were ignored.<br/>
 	//# 5. Any existing subarrays of primitive data have the correct number of elements, matching the number specified in brackets after the primitive type identifier.<br/>
 	//# 6. Any existing state identifiers associated with primitive data subarrays are valid as indicated by the $@Structure::GetStateValue@$ function.
 	//
@@ -901,6 +902,8 @@ namespace Terathon
 			TERATHON_API virtual bool ValidateTopLevelStructure(const Structure *structure) const;
 
 			TERATHON_API virtual DataResult ProcessData(void);
+
+			TERATHON_API DataResult ParseText(const char *text);
 			TERATHON_API DataResult ProcessText(const char *text);
 	};
 }

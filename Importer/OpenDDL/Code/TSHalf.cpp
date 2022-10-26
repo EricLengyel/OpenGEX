@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -23,7 +19,7 @@ namespace
 	// for the corresponding 32-bit float as well as a mantissa mask that flushes denorms to
 	// zero and clears the mantissa bits for any infinities.
 
-	alignas(128) const uint32 halfTable[64] =
+	alignas(64) const uint32 halfTable[64] =
 	{
 		0x00000000, 0x38FFFFFF, 0x397FFFFF, 0x39FFFFFF, 0x3A7FFFFF, 0x3AFFFFFF, 0x3B7FFFFF, 0x3BFFFFFF, 0x3C7FFFFF, 0x3CFFFFFF, 0x3D7FFFFF, 0x3DFFFFFF, 0x3E7FFFFF, 0x3EFFFFFF, 0x3F7FFFFF, 0x3FFFFFFF,
 		0x407FFFFF, 0x40FFFFFF, 0x417FFFFF, 0x41FFFFFF, 0x427FFFFF, 0x42FFFFFF, 0x437FFFFF, 0x43FFFFFF, 0x447FFFFF, 0x44FFFFFF, 0x457FFFFF, 0x45FFFFFF, 0x467FFFFF, 0x46FFFFFF, 0x477FFFFF, 0x7F800000,

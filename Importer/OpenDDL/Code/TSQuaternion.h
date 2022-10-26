@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Math Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -27,6 +23,9 @@
 
 namespace Terathon
 {
+	struct ConstQuaternion;
+
+
 	//# \class	Quaternion		Encapsulates a quaternion.
 	//
 	//# The $Quaternion$ class encapsulates a quaternion.
@@ -201,8 +200,8 @@ namespace Terathon
 	//# \action		float SquaredMag(const Quaternion& q);
 	//#				Returns the squared magnitude of a quaternion.
 	//
-	//# \action		Quaternion Conjugate(const Quaternion& q);
-	//#				Returns the conjugate of a quaternion.
+	//# \action		Quaternion Reverse(const Quaternion& q);
+	//#				Returns the reverse of a quaternion.
 	//
 	//# \action		Quaternion Inverse(const Quaternion& q);
 	//#				Returns the inverse of a quaternion.
@@ -212,7 +211,7 @@ namespace Terathon
 	//
 	//# \also	$@Vector3D@$
 	//# \also	$@Matrix3D@$
-	//# \also	$@Motor@$
+	//# \also	$@Motor4D@$
 
 
 	//# \function	Quaternion::Set		Sets all four components of a quaternion.
@@ -330,19 +329,16 @@ namespace Terathon
 
 	//# \function	Quaternion::SetRotationMatrix		Converts a 3&#x202F;&times;&#x202F;3 matrix to a quaternion.
 	//
-	//# \proto	Quaternion& SetRotationMatrix(const Matrix3D& m);
-	//# \proto	Quaternion& SetRotationMatrix(const Transform4D& m);
+	//# \proto	Quaternion& SetRotationMatrix(const Matrix3D& M);
 	//
-	//# \param	m		The matrix to convert to a quaternion.
+	//# \param	M		The matrix to convert to a quaternion.
 	//
 	//# \desc
 	//# The $SetRotationMatrix$ function sets the components of a quaternion to values that
-	//# represent the same rotation as the one represented by the matrix specified by the $m$ parameter.
-	//# If $m$ is a $@Transform4D@$ object, then the upper-left 3&#x202F;&times;&#x202F;3 submatrix is used,
-	//# and the fourth column is ignored.
+	//# represent the same rotation as the one represented by the matrix specified by the $M$ parameter.
 	//#
-	//# For best results, the matrix $m$ should be orthogonal. If the determinant of $m$ is not positive,
-	//# then the results are undefined.
+	//# This function expects the matrix $M$ to be orthogonal and have a determinant of +1.
+	//# If these conditions are not met, then the results are unlikely to be meaningful.
 	//
 	//# \also	$@Quaternion::GetRotationMatrix@$
 	//# \also	$@Quaternion::MakeRotationX@$
@@ -361,6 +357,8 @@ namespace Terathon
 			float	y;		//## The <i>y</i> coordinate of the bivector part.
 			float	z;		//## The <i>z</i> coordinate of the bivector part.
 			float	w;		//## The <i>w</i> coordinate, which is the scalar part.
+
+			TERATHON_API static const ConstQuaternion identity;
 
 			inline Quaternion() = default;
 
@@ -728,12 +726,6 @@ namespace Terathon
 		return ((q.w != s) || (q.x != 0.0F) || (q.y != 0.0F) || (q.z != 0.0F));
 	}
 
-
-	inline float Dot(const Quaternion& q1, const Quaternion& q2)
-	{
-		return (q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w);
-	}
-
 	inline float Magnitude(const Quaternion& q)
 	{
 		return (Sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w));
@@ -749,14 +741,14 @@ namespace Terathon
 		return (q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
 	}
 
-	inline Quaternion Conjugate(const Quaternion& q)
+	inline Quaternion Reverse(const Quaternion& q)
 	{
 		return (Quaternion(-q.x, -q.y, -q.z, q.w));
 	}
 
 	inline Quaternion Inverse(const Quaternion& q)
 	{
-		return (Conjugate(q) / SquaredMag(q));
+		return (Reverse(q) / SquaredMag(q));
 	}
 
 	inline Quaternion& Quaternion::operator /=(const Quaternion& q)
@@ -772,6 +764,11 @@ namespace Terathon
 	inline Quaternion operator /(float s, const Quaternion& q)
 	{
 		return (s * Inverse(q));
+	}
+
+	inline float Dot(const Quaternion& q1, const Quaternion& q2)
+	{
+		return (q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w);
 	}
 
 
@@ -800,6 +797,7 @@ namespace Terathon
 	}
 
 
+	TERATHON_API Quaternion Sqrt(const Quaternion& q);
 	TERATHON_API Vector3D Transform(const Vector3D& v, const Quaternion& q);
 
 

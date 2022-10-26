@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -103,25 +99,24 @@ int32 Text::ReadUnicodeChar(const char *text, uint32 *code)
 						*code = x;
 						return (3);
 					}
-
-					goto error;
 				}
-
-				uint32 byte4 = reinterpret_cast<const uint8 *>(text)[3];
-				if ((byte4 & 0xC0U) == 0x80U)
+				else
 				{
-					uint32 x = ((byte1 << 18) & 0x1C0000) | ((byte2 << 12) & 0x03F000) | ((byte3 << 6) & 0x000FC0) | (byte4 & 0x00003F);
-					if (x - 0x00010000U < 0x00100000U)
+					uint32 byte4 = reinterpret_cast<const uint8 *>(text)[3];
+					if ((byte4 & 0xC0U) == 0x80U)
 					{
-						*code = x;
-						return (4);
+						uint32 x = ((byte1 << 18) & 0x1C0000) | ((byte2 << 12) & 0x03F000) | ((byte3 << 6) & 0x000FC0) | (byte4 & 0x00003F);
+						if (x - 0x00010000U < 0x00100000U)
+						{
+							*code = x;
+							return (4);
+						}
 					}
 				}
 			}
 		}
 	}
 
-	error:
 	*code = 0xFFFD;
 	return (1);
 }

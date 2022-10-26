@@ -1,13 +1,9 @@
 //
-// This file is part of the Terathon Common Library, by Eric Lengyel.
-// Copyright 1999-2021, Terathon Software LLC
+// This file is part of the Terathon Container Library, by Eric Lengyel.
+// Copyright 1999-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -275,7 +271,6 @@ int32 TreeBase::GetSubtreeNodeCount(void) const
 int32 TreeBase::GetNodeIndex(void) const
 {
 	machine index = 0;
-
 	const TreeBase *element = this;
 	for (;;)
 	{
@@ -294,7 +289,6 @@ int32 TreeBase::GetNodeIndex(void) const
 int32 TreeBase::GetNodeDepth(void) const
 {
 	machine depth = 0;
-
 	const TreeBase *element = this;
 	for (;;)
 	{
