@@ -1,13 +1,9 @@
 //
 // This file is part of the Terathon OpenGEX Import Template, by Eric Lengyel.
-// Copyright 2013-2021, Terathon Software LLC
+// Copyright 2013-2022, Terathon Software LLC
 //
-// This software is licensed under the GNU General Public License version 3.
+// This software is distributed under the MIT License.
 // Separate proprietary licenses are available from Terathon Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-// EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-// OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
 //
 
 
@@ -4216,7 +4212,7 @@ void OpenGexDataDescription::ConvertColor(ColorRGB& color)
 
 Range<float> OpenGexDataDescription::GetAnimationTimeRange(int32 clip) const
 {
-	Range<float>	timeRange;
+	Range<float> timeRange(0.0F, 0.0F);
 
 	bool animationFlag = false;
 
@@ -4245,10 +4241,9 @@ Range<float> OpenGexDataDescription::GetAnimationTimeRange(int32 clip) const
 	{
 		timeRange.min *= timeScale;
 		timeRange.max *= timeScale;
-		return (timeRange);
 	}
 
-	return (Range<float>(0.0F, 0.0F));
+	return (timeRange);
 }
 
 void OpenGexDataDescription::UpdateAnimation(int32 clip, float time) const
