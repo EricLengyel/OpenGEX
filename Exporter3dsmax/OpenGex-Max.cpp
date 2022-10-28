@@ -1361,8 +1361,8 @@ ExportVertex *OpenGexExport::DeindexMesh(Mesh *mesh, Mesh *baseMesh, int *export
 
 	delete[] vnormal;
 
-	const VertColor *color = mesh->vertColArray;
-	TVFace *colorFace = mesh->vcFaceData;
+	const VertColor *color = mesh->vertCol;
+	TVFace *colorFace = mesh->vcFace;
 	if ((color) && (colorFace))
 	{
 		ev = exportVertex;
