@@ -6,6 +6,7 @@
 #  Export plugin for Blender
 #  by Eric Lengyel
 #    updated for blender 2.80 by Joel Davis
+# 	 updated with some fixes by Miguel Cartaxo
 #
 #  Version 2.9
 # 
@@ -32,6 +33,7 @@ bl_info = {
 import bpy
 import math
 import os
+import struct
 from enum import Enum
 from bpy_extras.io_utils import ExportHelper
 
@@ -114,7 +116,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 	option_export_selection : bpy.props.BoolProperty(name = "Export Selection Only", description = "Export only selected objects", default = False)
 	option_sample_animation : bpy.props.BoolProperty(name = "Force Sampled Animation", description = "Always export animation as per-frame samples", default = False)
-
+	option_float_as_hex : bpy.props.BoolProperty(name = "Use Hexadecimals", description = "Decimal numbers will be exported as hexadecimal numbers", default = True)
 
 	def Write(self, text):
 		self.file.write(text)
@@ -131,13 +133,26 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 	def WriteInt(self, i):
 		self.file.write(bytes(str(i), "UTF-8"))
 
-
-	def WriteFloat(self, f):
+	def WriteFloatAsIs(self, f):
 		if ((math.isinf(f)) or (math.isnan(f))):
 			self.file.write(B"0.0")
 		else:
-			self.file.write(bytes(str(f), "UTF-8"))
+			self.file.write(bytes(str('{:.6f}'.format(f)), "UTF-8"))
+	
+	def FloatToHex(self, f):
+		i = struct.unpack('<I', struct.pack('<f', f))[0]
+		return '0x{:08x}'.format(i)
 
+	def WriteFloatAsHex(self, f):
+		if ((math.isinf(f)) or (math.isnan(f))):
+			self.file.write('0x{:08x}'.format(0.0))
+		else:
+			self.file.write(bytes(str(self.FloatToHex(f)), "UTF-8"))
+
+	WriteFloatMap = [ WriteFloatAsIs, WriteFloatAsHex ]
+
+	def WriteFloat(self, f):
+		self.WriteFloatMap[int(self.option_float_as_hex)](self, f)
 
 	def WriteMatrix(self, matrix):
 		self.IndentWrite(B"{", 1)
@@ -608,25 +623,25 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 		colorCount = len(mesh.vertex_colors)
 		if (colorCount > 0):
-			colorFace = mesh._vertex_colors[0].data
+			colorFace = mesh.vertex_colors[0].data
 			vertexIndex = 0
 			faceIndex = 0
 
 			for face in mesh.loop_triangles:
 				cf = colorFace[faceIndex]
-				exportVertexArray[vertexIndex].color = cf.color1
+				exportVertexArray[vertexIndex].color[0] = cf.color[0]
 				vertexIndex += 1
-				exportVertexArray[vertexIndex].color = cf.color2
+				exportVertexArray[vertexIndex].color[1] = cf.color[1]
 				vertexIndex += 1
-				exportVertexArray[vertexIndex].color = cf.color3
+				exportVertexArray[vertexIndex].color[2] = cf.color[2]
 				vertexIndex += 1
 
 				if (len(face.vertices) == 4):
-					exportVertexArray[vertexIndex].color = cf.color1
+					exportVertexArray[vertexIndex].color[0] = cf.color[1]
 					vertexIndex += 1
-					exportVertexArray[vertexIndex].color = cf.color3
+					exportVertexArray[vertexIndex].color[1] = cf.color[2]
 					vertexIndex += 1
-					exportVertexArray[vertexIndex].color = cf.color4
+					exportVertexArray[vertexIndex].color[2] = cf.color[3]
 					vertexIndex += 1
 
 				faceIndex += 1
@@ -700,7 +715,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 
 	def ProcessBone(self, bone):
-		if ((self.exportAllFlag) or (bone.select)):
+		if ((self.exportAllFlag) or (bone.select_get())):
 			self.nodeArray[bone] = {"nodeType" : kNodeTypeBone, "structName" : bytes("node" + str(len(self.nodeArray) + 1), "UTF-8")}
 
 		for subnode in bone.children:
@@ -708,7 +723,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 
 	def ProcessNode(self, node):
-		if ((self.exportAllFlag) or (node.select)):
+		if ((self.exportAllFlag) or (node.select_get())):
 			type = OpenGexExporter.GetNodeType(node)
 			self.nodeArray[node] = {"nodeType" : type, "structName" : bytes("node" + str(len(self.nodeArray) + 1), "UTF-8")}
 
@@ -1029,7 +1044,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			self.indentLevel -= 1
 			self.IndentWrite(B"}\n")
 
-		scene.frame_set(currentFrame, currentSubframe)
+		scene.frame_set(currentFrame, subframe = currentSubframe)
 
 
 	def ExportBoneSampledAnimation(self, poseBone, scene):
@@ -1123,7 +1138,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			self.indentLevel -= 1
 			self.IndentWrite(B"}\n")
 
-		scene.frame_set(currentFrame, currentSubframe)
+		scene.frame_set(currentFrame, subframe = currentSubframe)
 
 
 	def ExportMorphWeightSampledAnimationTrack(self, block, target, scene, newline):
@@ -1170,7 +1185,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 		self.indentLevel -= 1
 		self.IndentWrite(B"}\n")
 
-		scene.frame_set(currentFrame, currentSubframe)
+		scene.frame_set(currentFrame, subframe = currentSubframe)
 
 
 	def ExportNodeTransform(self, node, scene):
