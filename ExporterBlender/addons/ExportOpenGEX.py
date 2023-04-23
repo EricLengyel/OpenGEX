@@ -117,6 +117,10 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 	option_export_selection : bpy.props.BoolProperty(name = "Export Selection Only", description = "Export only selected objects", default = False)
 	option_sample_animation : bpy.props.BoolProperty(name = "Force Sampled Animation", description = "Always export animation as per-frame samples", default = False)
 	option_float_as_hex : bpy.props.BoolProperty(name = "Use Hexadecimals", description = "Decimal numbers will be exported as hexadecimal numbers", default = True)
+	option_export_vertex_colors : bpy.props.BoolProperty(name = "Export Vertex Colors", description = "Export the active vertex color layer", default = False)
+	option_export_uvs : bpy.props.BoolProperty(name = "Export UVs", description = "Export the active UV layer", default = True)
+	option_export_normals : bpy.props.BoolProperty(name = "Export Normals", description = "Export vertex normals", default = True)
+	option_export_materials : bpy.props.BoolProperty(name = "Export Materials", description = "Export all materials used in the scene", default = True)
 
 	def Write(self, text):
 		self.file.write(text)
@@ -576,7 +580,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 
 	@staticmethod
-	def DeindexMesh(mesh, materialTable):
+	def DeindexMesh(mesh, materialTable, shouldExportVertexColor = True):
 
 		mesh.calc_loop_triangles()
 		
@@ -622,7 +626,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			faceIndex += 1
 
 		colorCount = len(mesh.vertex_colors)
-		if (colorCount > 0):
+		if (colorCount > 0 and shouldExportVertexColor):
 			colorFace = mesh.vertex_colors[0].data
 			vertexIndex = 0
 			faceIndex = 0
@@ -715,7 +719,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 
 	def ProcessBone(self, bone):
-		if ((self.exportAllFlag) or (bone.select_get())):
+		if ((self.exportAllFlag) or (bone.select)):
 			self.nodeArray[bone] = {"nodeType" : kNodeTypeBone, "structName" : bytes("node" + str(len(self.nodeArray) + 1), "UTF-8")}
 
 		for subnode in bone.children:
@@ -1837,8 +1841,9 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				self.Write(self.geometryArray[object]["structName"])
 				self.Write(B"}}\n")
 
-				for i in range(len(node.material_slots)):
-					self.ExportMaterialRef(node.material_slots[i].material, i)
+				if(self.option_export_materials):
+					for i in range(len(node.material_slots)):
+						self.ExportMaterialRef(node.material_slots[i].material, i)
 
 				shapeKeys = OpenGexExporter.GetShapeKeys(object)
 				if (shapeKeys):
@@ -2162,7 +2167,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 		# Triangulate mesh and remap vertices to eliminate duplicates.
 
 		materialTable = []
-		exportVertexArray = OpenGexExporter.DeindexMesh(exportMesh, materialTable)
+		exportVertexArray = OpenGexExporter.DeindexMesh(exportMesh, materialTable, self.option_export_vertex_colors)
 		triangleCount = len(materialTable)
 
 		indexTable = []
@@ -2185,23 +2190,23 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 		self.IndentWrite(B"}\n\n")
 
 		# Write the normal array.
+		if(self.option_export_normals):
+			self.IndentWrite(B"VertexArray (attrib = \"normal\")\n")
+			self.IndentWrite(B"{\n")
+			self.indentLevel += 1
 
-		self.IndentWrite(B"VertexArray (attrib = \"normal\")\n")
-		self.IndentWrite(B"{\n")
-		self.indentLevel += 1
+			self.IndentWrite(B"float[3]\t\t// ")
+			self.WriteInt(vertexCount)
+			self.IndentWrite(B"{\n", 0, True)
+			self.WriteVertexArray3D(unifiedVertexArray, "normal")
+			self.IndentWrite(B"}\n")
 
-		self.IndentWrite(B"float[3]\t\t// ")
-		self.WriteInt(vertexCount)
-		self.IndentWrite(B"{\n", 0, True)
-		self.WriteVertexArray3D(unifiedVertexArray, "normal")
-		self.IndentWrite(B"}\n")
-
-		self.indentLevel -= 1
-		self.IndentWrite(B"}\n")
+			self.indentLevel -= 1
+			self.IndentWrite(B"}\n")
 
 		# Write the color array if it exists.
 		colorCount = len(exportMesh.vertex_colors)
-		if (colorCount > 0):
+		if (colorCount > 0 and self.option_export_vertex_colors):
 			self.IndentWrite(B"VertexArray (attrib = \"color\")\n", 0, True)
 			self.IndentWrite(B"{\n")
 			self.indentLevel += 1
@@ -2216,28 +2221,29 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			self.IndentWrite(B"}\n")
 
 		# Write the texcoord arrays.
-		for uv_layer_index in range( len(mesh.uv_layers) ):
+		if(self.option_export_uvs):
+			for uv_layer_index in range( len(mesh.uv_layers) ):
 
-			if (uv_layer_index > 1):
-				break
+				if (uv_layer_index > 1):
+					break
 
-			if uv_layer_index > 0:
-				attribSuffix = bytes( f"[{uv_layer_index}]", "UTF-8" )
-			else:
-				attribSuffix = B""
+				if uv_layer_index > 0:
+					attribSuffix = bytes( f"[{uv_layer_index}]", "UTF-8" )
+				else:
+					attribSuffix = B""
 
-			self.IndentWrite(B"VertexArray (attrib = \"texcoord" + attribSuffix + B"\")\n", 0, True)
-			self.IndentWrite(B"{\n")
-			self.indentLevel += 1
+				self.IndentWrite(B"VertexArray (attrib = \"texcoord" + attribSuffix + B"\")\n", 0, True)
+				self.IndentWrite(B"{\n")
+				self.indentLevel += 1
 
-			self.IndentWrite(B"float[2]\t\t// ")
-			self.WriteInt(vertexCount )
-			self.IndentWrite(B"{\n", 0, True)
-			self.WriteVertexArray2D( unifiedVertexArray, "texcoord" + str(uv_layer_index) )
-			self.IndentWrite(B"}\n")
+				self.IndentWrite(B"float[2]\t\t// ")
+				self.WriteInt(vertexCount )
+				self.IndentWrite(B"{\n", 0, True)
+				self.WriteVertexArray2D( unifiedVertexArray, "texcoord" + str(uv_layer_index) )
+				self.IndentWrite(B"}\n")
 
-			self.indentLevel -= 1
-			self.IndentWrite(B"}\n")
+				self.indentLevel -= 1
+				self.IndentWrite(B"}\n")
 
 		# FIXME: Morph Target export needs to be updated to work with 2.80 mesh api
 		if (False) and (shapeKeys):
@@ -2664,6 +2670,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 	def ExportMaterials(self):
 
 		# This function exports all of the materials used in the scene.
+		if(not self.option_export_materials):
+			return
 
 		for materialRef in self.materialArray.items():
 			material = materialRef[0]
