@@ -34,6 +34,7 @@ import bpy
 import math
 import os
 import struct
+import time
 from enum import Enum
 from bpy_extras.io_utils import ExportHelper
 
@@ -2728,6 +2729,9 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 
 	def execute(self, context):
+		print('\nOpenGex export starting... %r' % self.filepath)
+		start_time = time.process_time()
+
 		self.file = open(self.filepath, "wb")
 
 		self.indentLevel = 0
@@ -2771,6 +2775,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			scene.frame_set(originalFrame, originalSubframe)
 
 		self.file.close()
+
+		print('Export finished in %.4f sec.' % (time.process_time() - start_time))
 		return {'FINISHED'}
 
 
