@@ -18,5 +18,4 @@ If there are Image textures connected directly to these paramers they will be in
 
 ## Limitations
 
-* Morph Targets (Shape Keys) are ignored, they need to be updated to use the 2.8 mesh api. 
 * UV transforms are ignored in textures.

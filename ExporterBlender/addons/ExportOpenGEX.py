@@ -2246,8 +2246,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				self.indentLevel -= 1
 				self.IndentWrite(B"}\n")
 
-		# FIXME: Morph Target export needs to be updated to work with 2.80 mesh api
-		if (False) and (shapeKeys):
+		# Write morph targets.
+		if (shapeKeys):
 			shapeKeys.key_blocks[0].value = 0.0
 			for m in range(1, len(currentMorphValue)):
 				shapeKeys.key_blocks[m].value = 1.0
@@ -2256,6 +2256,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				node.active_shape_key_index = m
 				#morphMesh = node.to_mesh(scene, applyModifiers, "RENDER", True, False)
 				morphMesh = self.GetMesh( node, scene, applyModifiers )
+				morphMesh.calc_loop_triangles()
 
 				# Write the morph target position array.
 
@@ -2291,7 +2292,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				self.indentLevel -= 1
 				self.IndentWrite(B"}\n")
 
-				bpy.data.meshes.remove(morphMesh)
+				# Delete morphMesh
+				node.to_mesh_clear()
 
 		# Write the index arrays.
 
@@ -2368,7 +2370,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			mesh.update()
 
 		# Delete the new mesh that we made earlier.
-		#bpy.data.meshes.remove(exportMesh)
+		node.to_mesh_clear()
 
 		self.indentLevel -= 1
 		self.IndentWrite(B"}\n")
