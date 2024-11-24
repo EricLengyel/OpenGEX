@@ -76,6 +76,7 @@ class ExportVertex:
 		self.color = [1.0, 1.0, 1.0]
 		self.texcoord0 = [0.0, 0.0]
 		self.texcoord1 = [0.0, 0.0]
+		self.normal = [0.0, 0.0, 1.0]
 
 	def __eq__(self, v):
 		if (self.hash != v.hash):
@@ -554,9 +555,9 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 		if (node.type == "MESH"):
 			if (len(node.data.polygons) != 0):
 				return (kNodeTypeGeometry)
-		elif (node.type == "LAMP"):
+		elif (node.type == "LIGHT"):
 			type = node.data.type
-			if ((type == "SUN") or (type == "POINT") or (type == "SPOT")):
+			if ((type == "SUN") or (type == "POINT") or (type == "SPOT")): # @TODO Add support for area lights. "AREA"
 				return (kNodeTypeLight)
 		elif (node.type == "CAMERA"):
 			return (kNodeTypeCamera)
@@ -584,6 +585,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 	def DeindexMesh(mesh, materialTable, shouldExportVertexColor = True):
 
 		mesh.calc_loop_triangles()
+		mesh.calc_normals_split()
 		
 		# This function deindexes all vertex positions, colors, and texcoords.
 		# Three separate ExportVertex structures are created for each triangle.
@@ -605,21 +607,39 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			exportVertex.vertexIndex = k1
 			exportVertex.faceIndex = faceIndex
 			exportVertex.position = v1.co
-			exportVertex.normal = v1.normal if (face.use_smooth) else face.normal
+			if face.use_smooth:
+				exportVertex.normal[0] = face.split_normals[0][0]
+				exportVertex.normal[1] = face.split_normals[0][1]
+				exportVertex.normal[2] = face.split_normals[0][2]
+			else:
+				exportVertex.normal = face.normal
+
 			exportVertexArray.append(exportVertex)
 
 			exportVertex = ExportVertex()
 			exportVertex.vertexIndex = k2
 			exportVertex.faceIndex = faceIndex
 			exportVertex.position = v2.co
-			exportVertex.normal = v2.normal if (face.use_smooth) else face.normal
+			if face.use_smooth:
+				exportVertex.normal[0] = face.split_normals[1][0]
+				exportVertex.normal[1] = face.split_normals[1][1]
+				exportVertex.normal[2] = face.split_normals[1][2]
+			else:
+				exportVertex.normal = face.normal
+
 			exportVertexArray.append(exportVertex)
 
 			exportVertex = ExportVertex()
 			exportVertex.vertexIndex = k3
 			exportVertex.faceIndex = faceIndex
 			exportVertex.position = v3.co
-			exportVertex.normal = v3.normal if (face.use_smooth) else face.normal
+			if face.use_smooth:
+				exportVertex.normal[0] = face.split_normals[2][0]
+				exportVertex.normal[1] = face.split_normals[2][1]
+				exportVertex.normal[2] = face.split_normals[2][2]
+			else:
+				exportVertex.normal = face.normal
+
 			exportVertexArray.append(exportVertex)
 
 			materialTable.append(face.material_index)
@@ -705,6 +725,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 		hashTable = [[] for i in range(bucketCount)]
 		unifiedVertexArray = []
 
+		print("Export Vertex Array %d" % len(exportVertexArray))
+
 		for i in range(len(exportVertexArray)):
 			ev = exportVertexArray[i]
 			bucket = ev.hash & (bucketCount - 1)
@@ -715,6 +737,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				hashTable[bucket].append(i)
 			else:
 				indexTable.append(indexTable[index])
+
+		print("Unified vertex array %d" % len(unifiedVertexArray))
 
 		return (unifiedVertexArray)
 
@@ -1830,8 +1854,11 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				if (not object in self.geometryArray):
 
 					# Attempt to sanitize name
-					geomName = object.name.replace(' ', '_')
-					geomName = geomName.replace('.', '_').lower()
+					# @Note Disabled, we want to keep the same names as they are originally
+					# in case we reimport the file.
+					#geomName = object.name.replace(' ', '_')
+					#geomName = geomName.replace('.', '_').lower()
+					geomName = object.name
 
 
 					self.geometryArray[object] = {"structName" : bytes(geomName, "UTF-8"), "nodeTable" : [node]}
@@ -1854,7 +1881,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 			elif (type == kNodeTypeLight):
 				if (not object in self.lightArray):
-					self.lightArray[object] = {"structName" : bytes("light" + str(len(self.lightArray) + 1), "UTF-8"), "nodeTable" : [node]}
+					self.lightArray[object] = {"structName" : bytes(object.name, "UTF-8"), "nodeTable" : [node]}
 				else:
 					self.lightArray[object]["nodeTable"].append(node)
 
@@ -1865,7 +1892,7 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 			elif (type == kNodeTypeCamera):
 				if (not object in self.cameraArray):
-					self.cameraArray[object] = {"structName" : bytes("camera" + str(len(self.cameraArray) + 1), "UTF-8"), "nodeTable" : [node]}
+					self.cameraArray[object] = {"structName" : bytes(object.name, "UTF-8"), "nodeTable" : [node]}
 				else:
 					self.cameraArray[object]["nodeTable"].append(node)
 
@@ -2424,7 +2451,14 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 			self.WriteFloat(intensity)
 			self.Write(B"}}\n")
 
+
 		if (pointFlag):
+
+			radius = object.shadow_soft_size # Odd naming for light radius.
+			if (radius > 0):
+				self.IndentWrite(B"Param (attrib = \"radius\") {float {")
+				self.WriteFloat(radius)
+				self.Write(B"}}\n")
 
 			# Export a separate attenuation function for each type that's in use.
 
@@ -2487,16 +2521,6 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 					self.IndentWrite(B"}\n")
 
-			if (object.use_sphere):
-				self.IndentWrite(B"Atten (curve = \"linear\")\n", 0, True)
-				self.IndentWrite(B"{\n")
-
-				self.IndentWrite(B"Param (attrib = \"end\") {float {", 1)
-				self.WriteFloat(object.distance)
-				self.Write(B"}}\n")
-
-				self.IndentWrite(B"}\n")
-
 			if (spotFlag):
 
 				# Export additional angular attenuation for spot lights.
@@ -2516,6 +2540,11 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 				self.Write(B"}}\n")
 
 				self.IndentWrite(B"}\n")
+		
+		else: # Directional/Infinite/Sun
+			self.IndentWrite(B"Param (attrib = \"angle\") {float {")
+			self.WriteFloat(object.angle)
+			self.Write(B"}}\n")
 
 		self.indentLevel -= 1
 		self.Write(B"}\n")
@@ -2534,8 +2563,8 @@ class OpenGexExporter(bpy.types.Operator, ExportHelper):
 
 		object = objectRef[0]
 
-		self.IndentWrite(B"Param (attrib = \"fov\") {float {")
-		self.WriteFloat(object.angle_x)
+		self.IndentWrite(B"Param (attrib = \"fovy\") {float {")
+		self.WriteFloat(object.angle_y)
 		self.Write(B"}}\n")
 
 		self.IndentWrite(B"Param (attrib = \"near\") {float {")
