@@ -1,6 +1,6 @@
-# OpenGEX Blender Exporter
+# OpenGEX Blender Importer
 
-This contains an Export plugin for OpenGEX files. 
+This contains an Import plugin for OpenGEX files. 
 
 Uses python 3. Tested with Blender 3.3.
 
@@ -8,7 +8,7 @@ Uses python 3. Tested with Blender 3.3.
 
 This importer is incomplete. It only imports static meshes with materials, as well as lights and cameras.
 
-It also comes with an OpenGex python parser, which is separate from Blender plugin itself, and a very (very) barebones math library.
+It also comes with an OpenGex python parser, which is separate from Blender plugin itself, based on Eric's Lengyel C++ importer example and a very (very) barebones math library.
 
 ## Limitations
 
