@@ -235,7 +235,7 @@ namespace OpenGEX
 
 		protected:
 
-			Transform4D		matrixValue;
+			Transform3D		matrixValue;
 
 			MatrixStructure(StructureType type);
 
@@ -248,7 +248,7 @@ namespace OpenGEX
 				return (objectFlag);
 			}
 
-			const Transform4D& GetMatrix(void) const
+			const Transform3D& GetMatrix(void) const
 			{
 				return (matrixValue);
 			}
@@ -261,7 +261,7 @@ namespace OpenGEX
 	{
 		private:
 
-			Array<Transform4D, 1>	transformArray;
+			Array<Transform3D, 1>	transformArray;
 
 		public:
 
@@ -273,7 +273,7 @@ namespace OpenGEX
 				return (transformArray.GetArrayElementCount());
 			}
 
-			const Transform4D& GetTransform(int32 index = 0) const
+			const Transform3D& GetTransform(int32 index = 0) const
 			{
 				return (transformArray[index]);
 			}
@@ -393,9 +393,9 @@ namespace OpenGEX
 
 			const char		*nodeName;
 
-			Transform4D		nodeTransform;
-			Transform4D		objectTransform;
-			Transform4D		inverseObjectTransform;
+			Transform3D		nodeTransform;
+			Transform3D		objectTransform;
+			Transform3D		inverseObjectTransform;
 
 			virtual const ObjectStructure *GetObjectStructure(void) const;
 
@@ -410,17 +410,17 @@ namespace OpenGEX
 			NodeStructure();
 			~NodeStructure();
 
-			const Transform4D& GetNodeTransform(void) const
+			const Transform3D& GetNodeTransform(void) const
 			{
 				return (nodeTransform);
 			}
 
-			const Transform4D& GetObjectTransform(void) const
+			const Transform3D& GetObjectTransform(void) const
 			{
 				return (objectTransform);
 			}
 
-			const Transform4D& GetInverseObjectTransform(void) const
+			const Transform3D& GetInverseObjectTransform(void) const
 			{
 				return (inverseObjectTransform);
 			}
@@ -745,7 +745,7 @@ namespace OpenGEX
 	{
 		private:
 
-			Transform4D							skinTransform;
+			Transform3D							skinTransform;
 
 			const SkeletonStructure				*skeletonStructure;
 			const BoneCountArrayStructure		*boneCountArrayStructure;
@@ -757,7 +757,7 @@ namespace OpenGEX
 			SkinStructure();
 			~SkinStructure();
 
-			const Transform4D& GetSkinTransform(void) const
+			const Transform3D& GetSkinTransform(void) const
 			{
 				return (skinTransform);
 			}
@@ -1052,7 +1052,7 @@ namespace OpenGEX
 			String<>		textureBorder;
 
 			String<>		textureName;
-			Transform4D		texcoordTransform;
+			Transform3D		texcoordTransform;
 
 			void SetTextureName(const OpenGexDataDescription *dataDescription, const char *name);
 
@@ -1086,7 +1086,7 @@ namespace OpenGEX
 				return (textureName);
 			}
 
-			const Transform4D& GetTexcoordTransform(void) const
+			const Transform3D& GetTexcoordTransform(void) const
 			{
 				return (texcoordTransform);
 			}
@@ -1547,7 +1547,7 @@ namespace OpenGEX
 			Structure *CreateStructure(const String<>& identifier) const override;
 			bool ValidateTopLevelStructure(const Structure *structure) const override;
 
-			void AdjustTransform(Transform4D& transform) const;
+			void AdjustTransform(Transform3D& transform) const;
 			void ConvertColor(ColorRGB& color);
 
 			Range<float> GetAnimationTimeRange(int32 clip) const;

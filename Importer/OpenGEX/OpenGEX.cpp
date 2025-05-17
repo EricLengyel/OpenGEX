@@ -304,7 +304,7 @@ DataResult ObjectRefStructure::ProcessData(DataDescription *dataDescription)
 		}
 	}
 
-	return (kDataBrokenRef);
+	return (kDataBrokenReference);
 }
 
 
@@ -369,7 +369,7 @@ DataResult MaterialRefStructure::ProcessData(DataDescription *dataDescription)
 		}
 	}
 
-	return (kDataBrokenRef);
+	return (kDataBrokenReference);
 }
 
 
@@ -452,7 +452,7 @@ DataResult TransformStructure::ProcessData(DataDescription *dataDescription)
 
 	if (arraySize == 16)
 	{
-		const Transform4D *transform = reinterpret_cast<const Transform4D *>(data);
+		const Transform3D *transform = reinterpret_cast<const Transform3D *>(data);
 		for (machine a = 0; a < transformCount; a++)
 		{
 			transformArray.AppendArrayElement(transform[a]);
@@ -462,7 +462,7 @@ DataResult TransformStructure::ProcessData(DataDescription *dataDescription)
 	{
 		for (machine a = 0; a < transformCount; a++)
 		{
-			transformArray.AppendArrayElement(Transform4D(data[0], data[3], data[6], data[9], data[1], data[4], data[7], data[10], data[2], data[5], data[8], data[11]));
+			transformArray.AppendArrayElement(Transform3D(data[0], data[3], data[6], data[9], data[1], data[4], data[7], data[10], data[2], data[5], data[8], data[11]));
 			data += 12;
 		}
 	}
@@ -470,7 +470,7 @@ DataResult TransformStructure::ProcessData(DataDescription *dataDescription)
 	{
 		for (machine a = 0; a < transformCount; a++)
 		{
-			transformArray.AppendArrayElement(Transform4D(data[0], data[3], data[6], 0.0F, data[1], data[4], data[7], 0.0F, data[2], data[5], data[8], 0.0F));
+			transformArray.AppendArrayElement(Transform3D(data[0], data[3], data[6], 0.0F, data[1], data[4], data[7], 0.0F, data[2], data[5], data[8], 0.0F));
 			data += 9;
 		}
 	}
@@ -478,7 +478,7 @@ DataResult TransformStructure::ProcessData(DataDescription *dataDescription)
 	{
 		for (machine a = 0; a < transformCount; a++)
 		{
-			transformArray.AppendArrayElement(Transform4D(data[0], data[2], 0.0F, data[4], data[1], data[3], 0.0F, data[5], 0.0F, 0.0F, 1.0F, 0.0F));
+			transformArray.AppendArrayElement(Transform3D(data[0], data[2], 0.0F, data[4], data[1], data[3], 0.0F, data[5], 0.0F, 0.0F, 1.0F, 0.0F));
 			data += 6;
 		}
 	}
@@ -486,7 +486,7 @@ DataResult TransformStructure::ProcessData(DataDescription *dataDescription)
 	{
 		for (machine a = 0; a < transformCount; a++)
 		{
-			transformArray.AppendArrayElement(Transform4D(data[0], data[2], 0.0F, 0.0F, data[1], data[3], 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F));
+			transformArray.AppendArrayElement(Transform3D(data[0], data[2], 0.0F, 0.0F, data[1], data[3], 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F));
 			data += 4;
 		}
 	}
@@ -497,7 +497,7 @@ DataResult TransformStructure::ProcessData(DataDescription *dataDescription)
 
 void TransformStructure::UpdateAnimation(const OpenGexDataDescription *dataDescription, const float *data)
 {
-	matrixValue = *reinterpret_cast<const Transform4D *>(data);
+	matrixValue = *reinterpret_cast<const Transform3D *>(data);
 }
 
 
@@ -674,19 +674,19 @@ void RotationStructure::UpdateAnimation(const OpenGexDataDescription *dataDescri
 
 	if (rotationKind == "x")
 	{
-		matrixValue = Transform4D::MakeRotationX(data[0] * scale);
+		matrixValue = Transform3D::MakeRotationX(data[0] * scale);
 	}
 	else if (rotationKind == "y")
 	{
-		matrixValue = Transform4D::MakeRotationY(data[0] * scale);
+		matrixValue = Transform3D::MakeRotationY(data[0] * scale);
 	}
 	else if (rotationKind == "z")
 	{
-		matrixValue = Transform4D::MakeRotationZ(data[0] * scale);
+		matrixValue = Transform3D::MakeRotationZ(data[0] * scale);
 	}
 	else if (rotationKind == "axis")
 	{
-		matrixValue = Transform4D::MakeRotation(data[0] * scale, Bivector3D(data[1], data[2], data[3]).Normalize());
+		matrixValue = Transform3D::MakeRotation(data[0] * scale, Bivector3D(data[1], data[2], data[3]).Normalize());
 	}
 	else
 	{
@@ -773,19 +773,19 @@ void ScaleStructure::UpdateAnimation(const OpenGexDataDescription *dataDescripti
 {
 	if (scaleKind == "x")
 	{
-		matrixValue = Transform4D::MakeScaleX(data[0]);
+		matrixValue = Transform3D::MakeScaleX(data[0]);
 	}
 	else if (scaleKind == "y")
 	{
-		matrixValue = Transform4D::MakeScaleY(data[0]);
+		matrixValue = Transform3D::MakeScaleY(data[0]);
 	}
 	else if (scaleKind == "z")
 	{
-		matrixValue = Transform4D::MakeScaleZ(data[0]);
+		matrixValue = Transform3D::MakeScaleZ(data[0]);
 	}
 	else if (scaleKind == "xyz")
 	{
-		matrixValue = Transform4D::MakeScale(data[0], data[1], data[2]);
+		matrixValue = Transform3D::MakeScale(data[0], data[1], data[2]);
 	}
 }
 
@@ -1429,7 +1429,7 @@ DataResult VertexArrayStructure::ProcessData(DataDescription *dataDescription)
 
 			if ((scale != 1.0F) || (up != 'z'))
 			{
-				Transform4D		transform;
+				Transform3D		transform;
 
 				if (up == 'z')
 				{
@@ -1635,7 +1635,7 @@ DataResult BoneRefArrayStructure::ProcessData(DataDescription *dataDescription)
 			const Structure *boneStructure = dataDescription->FindStructure(reference);
 			if (!boneStructure)
 			{
-				return (kDataBrokenRef);
+				return (kDataBrokenReference);
 			}
 
 			if (boneStructure->GetStructureType() != kStructureBoneNode)
@@ -3649,7 +3649,7 @@ DataResult TrackStructure::ProcessData(DataDescription *dataDescription)
 	Structure *target = GetSuperNode()->GetSuperNode()->FindStructure(targetRef);
 	if (!target)
 	{
-		return (kDataBrokenRef);
+		return (kDataBrokenReference);
 	}
 
 	if ((target->GetBaseStructureType() != kStructureMatrix) && (target->GetStructureType() != kStructureMorphWeight))
@@ -4163,7 +4163,7 @@ DataResult OpenGexDataDescription::ProcessData(void)
 	return (result);
 }
 
-void OpenGexDataDescription::AdjustTransform(Transform4D& transform) const
+void OpenGexDataDescription::AdjustTransform(Transform3D& transform) const
 {
 	transform.SetTranslation(transform.GetTranslation() * distanceScale);
 
